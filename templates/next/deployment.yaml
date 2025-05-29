@@ -1,0 +1,33 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: next
+spec:
+  replicas: {{ int .Values.next.replicas }}
+  selector:
+    matchLabels:
+      app: next
+  template:
+    metadata:
+      labels:
+        app: next
+    spec:
+      {{- if .Values.app.allowControlPlane }}
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      {{- end }}
+      containers:
+        - name: next
+          image: {{- print "heftychonk/next:%s" .Values.app.version -}}
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"

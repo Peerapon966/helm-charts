@@ -1,0 +1,49 @@
+{{- if .Values.phpmyadmin.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phpmyadmin
+spec:
+  replicas: {{ int .Values.phpmyadmin.replicas }}
+  selector:
+    matchLabels:
+      app: phpmyadmin
+  template:
+    metadata:
+      labels:
+        app: phpmyadmin
+    spec:
+      {{- if .Values.phpmyadmin.allowControlPlane }}
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      {{- end }}
+      containers:
+        - name: phpmyadmin
+          image: {{- printf "phpmyadmin:%s" (default "latest" .Values.phpmyadmin.version) -}}
+          ports:
+            - containerPort: 80
+          envFrom:
+            - secretRef:
+                name: phpmyadmin-config
+          env:
+            - name: PMA_HOSTS
+              value: ""
+            - name: PMA_USER
+              value: ""
+            - name: PMA_PASSWORD
+              value: ""
+            - name: PMA_ARBITRARY
+              value: "1"
+            - name: PMA_PORT
+              value: ""
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+{{ -end }}

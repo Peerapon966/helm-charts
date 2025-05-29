@@ -1,0 +1,3 @@
+# Ignore YAML files only in the 'templates' folder
+templates/*.yaml
+templates/*.yml

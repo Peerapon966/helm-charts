@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: myphpadmin
+spec:
+  selector:
+    app: myphpadmin
+  ports:
+    - protocol: TCP
+      port: {{ int (default 8080 .Values.myphpadmin.port) }}
+      targetPort: 80

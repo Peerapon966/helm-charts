@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "redhat.ansible",
+    "ms-kubernetes-tools.vscode-kubernetes-tools",
+    "hashicorp.terraform",
+    "esbenp.prettier-vscode"
+  ],
+  "unwantedRecommendations": []
+}

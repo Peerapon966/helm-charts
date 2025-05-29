@@ -1,0 +1,16 @@
+hostname: "hsr.local"
+namespace: "hsr"
+next:
+  version: "1.0.0"
+  replicas: 2
+  path: "/"
+  port: 3000
+  allowControlPlane: false
+phpmyadmin:
+  enabled: true
+  version: "5.1.1"
+  replicas: 1
+  path: "/phpmyadmin"
+  port: 8080
+  dbPort: 3306
+  allowControlPlane: false
