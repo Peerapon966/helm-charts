@@ -1,5 +1,13 @@
 hostname: "hsr.local"
 namespace: "hsr"
+secrets:
+  dbCredential:
+    host: 
+    user: 
+    password: 
+    port: # 3306, 5432, etc.
+    database: "starrail"
+    arbitrary: true
 next:
   version: "1.0.0"
   replicas: 2
@@ -12,5 +20,8 @@ phpmyadmin:
   replicas: 1
   path: "/phpmyadmin"
   port: 8080
-  dbPort: 3306
   allowControlPlane: false
+mailhog:
+  enabled: true
+  version: "2.10.0"
+  replicas: 1

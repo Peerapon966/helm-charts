@@ -3,16 +3,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: phpmyadmin
+  name: {{ include "hsr.name" . }}-phpmyadmin
 spec:
   replicas: {{ int .Values.phpmyadmin.replicas }}
   selector:
     matchLabels:
-      app: phpmyadmin
+      app: {{ include "hsr.name" . }}-phpmyadmin
   template:
     metadata:
       labels:
-        app: phpmyadmin
+        app: {{ include "hsr.name" . }}-phpmyadmin
     spec:
       {{- if .Values.phpmyadmin.allowControlPlane }}
       tolerations:
@@ -27,18 +27,7 @@ spec:
             - containerPort: 80
           envFrom:
             - secretRef:
-                name: phpmyadmin-config
-          env:
-            - name: PMA_HOSTS
-              value: ""
-            - name: PMA_USER
-              value: ""
-            - name: PMA_PASSWORD
-              value: ""
-            - name: PMA_ARBITRARY
-              value: "1"
-            - name: PMA_PORT
-              value: ""
+                name: {{ include "hsr.name" . }}-phpmyadmin
           resources:
             requests:
               memory: "64Mi"
@@ -46,4 +35,4 @@ spec:
             limits:
               memory: "128Mi"
               cpu: "500m"
-{{ -end }}
+{{- end }}

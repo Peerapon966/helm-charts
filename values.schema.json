@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "hostname": {
+      "type": "string",
+      "description": "The domain name used for Ingress routing (e.g., hsr.local)."
+    },
+    "namespace": {
+      "type": "string",
+      "description": "The namespace in which to deploy the application."
+    },
+    "secrets": {
+      "type": "object",
+      "properties": {
+        "dbCredential": {
+          "type": "object",
+          "properties": {
+            "host": {
+              "type": "string",
+              "description": "Database host address (e.g., db.hsr.svc)."
+            },
+            "user": {
+              "type": "string",
+              "description": "Database username."
+            },
+            "password": {
+              "type": "string",
+              "description": "Database password."
+            },
+            "port": {
+              "type": "integer",
+              "description": "Database port (e.g., 3306 for MySQL, 5432 for PostgreSQL).",
+              "minimum": 1,
+              "maximum": 65535
+            },
+            "database": {
+              "type": "string",
+              "description": "Name of the database to use."
+            },
+            "arbitrary": {
+              "type": "boolean",
+              "description": "Whether arbitrary DB features are allowed."
+            }
+          },
+          "required": [
+            "host",
+            "user",
+            "password",
+            "port",
+            "database"
+          ]
+        }
+      },
+      "required": [
+        "dbCredential"
+      ]
+    },
+    "next": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "Version of the Next.js application."
+        },
+        "replicas": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Number of replicas to deploy."
+        },
+        "path": {
+          "type": "string",
+          "description": "Path for Next.js Ingress routing (e.g., /)."
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535,
+          "description": "Port the Next.js app listens on."
+        },
+        "allowControlPlane": {
+          "type": "boolean",
+          "description": "Allow scheduling on control plane nodes."
+        }
+      },
+      "required": [
+        "version",
+        "replicas",
+        "path",
+        "port"
+      ]
+    },
+    "phpmyadmin": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether phpMyAdmin is deployed."
+        },
+        "version": {
+          "type": "string",
+          "description": "Version of phpMyAdmin to deploy."
+        },
+        "replicas": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Number of phpMyAdmin replicas."
+        },
+        "path": {
+          "type": "string",
+          "description": "Ingress path for phpMyAdmin (e.g., /phpmyadmin)."
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535,
+          "description": "Port phpMyAdmin listens on."
+        },
+        "allowControlPlane": {
+          "type": "boolean",
+          "description": "Allow phpMyAdmin to be scheduled on control plane nodes."
+        }
+      },
+      "required": [
+        "enabled",
+        "version",
+        "replicas",
+        "path",
+        "port"
+      ]
+    }
+  },
+  "required": [
+    "hostname",
+    "namespace",
+    "secrets",
+    "next",
+    "phpmyadmin"
+  ]
+}

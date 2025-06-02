@@ -2,18 +2,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: next
+  name: {{ include "hsr.name" . }}-next
 spec:
   replicas: {{ int .Values.next.replicas }}
   selector:
     matchLabels:
-      app: next
+      app: {{ include "hsr.name" . }}-next
   template:
     metadata:
       labels:
-        app: next
+        app: {{ include "hsr.name" . }}-next
     spec:
-      {{- if .Values.app.allowControlPlane }}
+      {{- if .Values.next.allowControlPlane }}
       tolerations:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
@@ -21,7 +21,7 @@ spec:
       {{- end }}
       containers:
         - name: next
-          image: {{- print "heftychonk/next:%s" .Values.app.version -}}
+          image: {{- printf "heftychonk/next:%s" .Values.next.version -}}
           ports:
             - containerPort: 3000
           resources:
