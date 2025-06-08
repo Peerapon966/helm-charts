@@ -10,10 +10,28 @@ spec:
     - host: {{- .Values.hostname -}}
       http:
         paths:
-          - path: /
+          - path: {{ default "/" (.Values.next.path | quote) }}
             pathType: Prefix
             backend:
               service:
-                name: next-service
+                name: {{ include "hsr.name" . }}-next
                 port:
-                  number: 3000
+                  number: {{ int (default 3000 .Values.next.port) }}
+          {{- if .Values.phpmyadmin.enabled }}
+          - path: {{ default "/phpmyadmin" (.Values.phpmyadmin.path | quote) }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "hsr.name" . }}-phpmyadmin
+                port:
+                  number: {{ int (default 8080 .Values.phpmyadmin.port) }}
+          {{- end }}
+          {{- if .Values.mailhog.enabled }}
+          - path: {{ default "/mailhog" (.Values.mailhog.path | quote) }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "hsr.name" . }}-mailhog
+                port:
+                  number: {{ int (default 8025 .Values.mailhog.port) }}
+          {{- end }}

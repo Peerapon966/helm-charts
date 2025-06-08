@@ -1,0 +1,45 @@
+{{- if .Values.mysql.useLocal }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "hsr.name" . }}-mysql
+spec:
+  template:
+    spec:
+      volumes:
+      - name: shared-sql
+        emptyDir: {}
+
+      initContainers:
+      - name: starrail-bak
+        image: {{ printf "heftychonk/starrail-bak:%s" .Values.mysql.dataVersion }}
+        command: ["sh", "-c", "cp /starrail_bak.sql /data/starrail_bak.sql"]
+        volumeMounts:
+        - name: shared-sql
+          mountPath: /data
+
+      containers:
+      - name: mysql-client
+        image: {{- printf "mysql:%s" (default "latest" .Values.mysql.version) -}}
+        envFrom:
+        - secretRef:
+            name: {{ include "hsr.name" . }}-mysql
+        env:
+        - name: NAMESPACE
+          value: {{ .Values.namespace }}
+        - name: PREFIX
+          value: {{ include "hsr.name" . }}
+        command:
+          - sh
+          - -c
+          - |
+            mysql -h "${PREFIX}-mysql-0.${PREFIX}-mysql.${NAMESPACE}.svc.cluster.local" \
+                  -u root -p$MYSQL_ROOT_PASSWORD \
+                  starrail < /data/starrail_bak.sql
+        volumeMounts:
+        - name: shared-sql
+          mountPath: /data
+      restartPolicy: Never
+  backoffLimit: 4
+{{- end }}

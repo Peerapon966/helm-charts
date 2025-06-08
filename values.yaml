@@ -1,27 +1,138 @@
+# hostname - The base domain or internal hostname for services
 hostname: "hsr.local"
+
+# namespace - The Kubernetes namespace in which all resources will be deployed
 namespace: "hsr"
-secrets:
-  dbCredential:
-    host: 
-    user: 
-    password: 
-    port: # 3306, 5432, etc.
-    database: "starrail"
-    arbitrary: true
+
 next:
+  # next.version - Docker image tag or version of the Next.js application
   version: "1.0.0"
+
+  # next.replicas - Number of replicas to run for the Next.js application
   replicas: 2
+
+  # next.path - The base path on which the Next.js app is served behind the ingress
   path: "/"
+
+  # next.port - The port on which the Next.js application listens
   port: 3000
+
+  # next.allowControlPlane - Whether to allow scheduling Next.js pods on control plane nodes
   allowControlPlane: false
+
+  nextAuth:
+    url: 
+    secret: 
+    googleClientId: 
+    googleClientSecret:
+
+mysql:
+  # mysql.useLocal - Whether to deploy MySQL locally as a StatefulSet
+  useLocal: true
+
+  # mysql.version - MySQL Docker image version
+  version: "8.0"
+
+  # mysql.replicas - Number of MySQL replicas to deploy
+  replicas: 3
+
+  # mysql.storageSize - Size (in Gi) of the persistent volume for MySQL (only relevant when useLocal is true)
+  storageSize: 10
+
+  # mysql.allowControlPlane - Whether to allow scheduling MySQL pods on control plane nodes
+  allowControlPlane: false
+
+  # mysql.dataVersion - Tag of the MySQL dump image used to seed the database (only relevant when useLocal is true)
+  dataVersion: "20241224"
+
+  connection:
+    # mysql.connection.host - Hostname for MySQL service (only relevant when useLocal is true)
+    host: 
+
+    # mysql.connection.user - MySQL user for application access
+    user: 
+
+    # mysql.connection.password - Password for the MySQL user
+    password: 
+
+    # mysql.connection.port - MySQL port number
+    port: 3306
+
+    # mysql.connection.database - MySQL database name
+    database: "starrail"
+
+    # mysql.connection.timezone - Timezone to be set in the MySQL container (e.g., UTC, Asia/Tokyo; only relevant when useLocal is true)
+    timezone: "Asia/Bangkok"
+
+    # mysql.connection.rootPassword - Root user password for the MySQL instance (only relevant when useLocal is true)
+    rootPassword: 
+
 phpmyadmin:
+  # phpmyadmin.enabled - Whether to deploy phpMyAdmin
   enabled: true
+
+  # phpmyadmin.version - Docker image tag or version of phpMyAdmin
   version: "5.1.1"
+
+  # phpmyadmin.replicas - Number of phpMyAdmin replicas to deploy
   replicas: 1
+
+  # phpmyadmin.path - The path at which phpMyAdmin is exposed behind the ingress
   path: "/phpmyadmin"
+
+  # phpmyadmin.port - The port on which phpMyAdmin container listens
   port: 8080
+
+  # phpmyadmin.arbitrary - Enables PMA_ARBITRARY=1, allowing connections to arbitrary MySQL servers
+  arbitrary: true
+
+  # phpmyadmin.allowControlPlane - Whether to allow scheduling phpMyAdmin pods on control plane nodes
   allowControlPlane: false
+
+redis:
+  # redis.useLocal - Whether to deploy Redis as a local StatefulSet (true) or use an external Redis instance (false)
+  useLocal: true
+
+  # redis.version - Redis image version to use (only relevant when useLocal is true)
+  version: "8-alpine"
+
+  # redis.replicas - Number of Redis replicas (only relevant when useLocal is true)
+  replicas: 3
+
+  # redis.storageSize - Size (in Gi) of the persistent volume for Redis (only relevant when useLocal is true)
+  storageSize: 1
+
+  # redis.allowControlPlane - Whether to allow scheduling Redis pods on control plane nodes (only relevant when useLocal is true)
+  allowControlPlane: false
+
+  connection:
+    # redis.connection.host - Redis hostname or service DNS (only relevant when useLocal is true)
+    host: 
+
+    # redis.connection.port - Redis port number
+    port: 6379
+
+    # redis.connection.password - Password used to connect to Redis
+    password: 
+
 mailhog:
+  # mailhog.enabled - Whether to deploy MailHog
   enabled: true
-  version: "2.10.0"
+
+  # mailhog.version - MailHog Docker image version
+  version: "v1.0.1"
+
+  # mailhog.replicas - Number of MailHog replicas to deploy
   replicas: 1
+
+  # mailhog.path - The path at which MailHog is exposed behind the ingress
+  path: "/mailhog"
+
+  # mailhog.port - The port on which the MailHog web UI is exposed
+  port: 8025
+
+  # mailhog.smtpPort - The port on which MailHog listens for SMTP traffic
+  smtpPort: 1025
+
+  # mailhog.allowControlPlane - Whether to allow scheduling MailHog pods on control plane nodes
+  allowControlPlane: false

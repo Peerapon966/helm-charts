@@ -1,0 +1,15 @@
+{{- if .Values.mysql.useLocal }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "hsr.name" . }}-mysql
+spec:
+  clusterIP: None
+  selector:
+    app: {{ include "hsr.name" . }}-mysql
+  ports:
+    - protocol: TCP
+      port: {{ int (default 3306 .Values.mysql.connection.port) }}
+      targetPort: 3306
+{{- end }}

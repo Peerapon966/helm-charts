@@ -1,0 +1,74 @@
+{{- if .Values.mysql.useLocal }}
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "hsr.name" . }}-mysql
+spec:
+  serviceName: {{ include "hsr.name" . }}-mysql
+  replicas: {{ int .Values.mysql.replicas }}
+  selector:
+    matchLabels:
+      app: {{ include "hsr.name" . }}-mysql
+  template:
+    metadata:
+      labels:
+        app: {{ include "hsr.name" . }}-mysql
+    spec:
+      {{- if .Values.mysql.allowControlPlane }}
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      {{- end }}
+      containers:
+        - name: mysql
+          image: {{- printf "mysql:%s" (default "latest" .Values.mysql.version) -}}
+          ports:
+            - containerPort: 6379
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          command: [ "sh", "-c" ]
+          args:
+            - |
+              if [ "$(hostname)" = "${PREFIX}-redis-0" ]; then
+                echo "Starting as primary"
+                exec redis-server \
+                  --appendonly yes \
+                  --requirepass "$REDIS_PASSWORD" \
+                  --save 60 1 \
+                  --loglevel warning
+              else
+                echo "Starting as replica of ${PREFIX}-redis-0"
+                exec redis-server \
+                  --appendonly yes \
+                  --requirepass "$REDIS_PASSWORD" \
+                  --masterauth "$REDIS_PASSWORD" \
+                  --save 60 1 \
+                  --loglevel warning \
+                  --replicaof "${PREFIX}-redis-0.${PREFIX}-redis.${NAMESPACE}.svc.cluster.local 6379"
+              fi
+          envFrom:
+            - secretRef:
+                name: {{ include "hsr.name" . }}-redis
+          env:
+            - name: NAMESPACE
+              value: {{ .Values.namespace }}
+            - name: PREFIX
+              value: {{ include "hsr.name" . }}
+          readinessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 5
+            periodSeconds: 10
+      terminationGracePeriodSeconds: 10
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: {{- printf "%sGi" .Values.redis.storageSize -}}
+{{- end }}

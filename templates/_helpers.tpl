@@ -62,12 +62,45 @@ Create the name of the service account to use
 {{- end }}
 
 {{/*
-Generate a database connection string from a dbCredential object.
+Generate the database host URL.
+*/}}
+{{- define "hsr.dbHost" -}}
+{{- if .Values.mysql.useLocal -}}
+{{- printf "%s-mysql-0.%s-mysql.%s.svc.cluster.local" (include "hsr.name" .) (include "hsr.name" .) .Values.namespace -}}
+{{- else -}}
+{{ .Values.mysql.connection.host -}}
+{{- end }}
+{{- end }}
+
+{{/*
+Generate a database connection string using full . context
 Usage:
-  {{ include "mychart.databaseUrl" (dict "db" .Values.secrets.dbCredential) }}
+  {{ include "hsr.dbConnectionString" . }}
 */}}
 {{- define "hsr.dbConnectionString" -}}
-{{- with .dbCredential }}
-{{- printf "mysql://%s:%s@%s:%s/%s" .user .password .host (toString .port) .database -}}
-{{- end -}}
+{{- with .Values.mysql.connection }}
+{{- printf "mysql://%s:%s@%s:%s/%s" .user .password (include "hsr.dbHost" $) (toString .port) .database -}}
+{{- end }}
+{{- end }}
+
+{{/*
+Generate the redis host URL.
+*/}}
+{{- define "hsr.redisHost" -}}
+{{- if .Values.redis.useLocal -}}
+{{- printf "%s-redis-0.%s-redis.%s.svc.cluster.local" (include "hsr.name" .) (include "hsr.name" .) .Values.namespace -}}
+{{- else -}}
+{{ .Values.redis.connection.host -}}
+{{- end }}
+{{- end }}
+
+{{/*
+Generate a redis connection string using full . context
+Usage:
+  {{ include "hsr.redisConnectionString" . }}
+*/}}
+{{- define "hsr.redisConnectionString" -}}
+{{- with .Values.redis.connection }}
+{{- printf "redis://default:%s@%s:%s" .password (include "hsr.redisHost" $) (toString .port) -}}
+{{- end }}
 {{- end }}

@@ -1,0 +1,19 @@
+{{- if .Values.mailhog.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "hsr.name" . }}-mailhog
+spec:
+  selector:
+    app: {{ include "hsr.name" . }}-mailhog
+  ports:
+    - name: web
+      protocol: TCP
+      port: {{ int (default 8025 .Values.mailhog.port) }}
+      targetPort: 8025
+    - name: smtp
+      protocol: TCP
+      port: {{ int (default 1025 .Values.mailhog.port) }}
+      targetPort: 1025
+{{- end }}

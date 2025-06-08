@@ -24,6 +24,9 @@ spec:
           image: {{- printf "heftychonk/next:%s" .Values.next.version -}}
           ports:
             - containerPort: 3000
+          envFrom:
+            - secretRef:
+                name: {{ include "hsr.name" . }}-next
           resources:
             requests:
               memory: "64Mi"

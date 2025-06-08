@@ -1,0 +1,38 @@
+{{- if .Values.mailhog.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "hsr.name" . }}-mailhog
+spec:
+  replicas: {{ int .Values.mailhog.replicas }}
+  selector:
+    matchLabels:
+      app: {{ include "hsr.name" . }}-mailhog
+  template:
+    metadata:
+      labels:
+        app: {{ include "hsr.name" . }}-mailhog
+    spec:
+      {{- if .Values.mailhog.allowControlPlane }}
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      {{- end }}
+      containers:
+        - name: mailhog
+          image: {{- printf "mailhog/mailhog:%s" (default "latest" .Values.mailhog.version) -}}
+          ports:
+            - containerPort: 1025
+              name: smtp
+            - containerPort: 8025
+              name: web
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+{{- end }}

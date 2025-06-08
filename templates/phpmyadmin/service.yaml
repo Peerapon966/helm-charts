@@ -1,3 +1,5 @@
+{{- if .Values.phpmyadmin.enabled }}
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -7,5 +9,6 @@ spec:
     app: {{ include "hsr.name" . }}-myphpadmin
   ports:
     - protocol: TCP
-      port: {{ int (default 8080 .Values.secrets.dbCredential.port) }}
+      port: {{ int (default 8080 .Values.mysql.connection.port) }}
       targetPort: 80
+{{- end }}
