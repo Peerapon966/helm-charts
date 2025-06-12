@@ -24,51 +24,61 @@ spec:
       containers:
         - name: mysql
           image: {{- printf "mysql:%s" (default "latest" .Values.mysql.version) -}}
-          ports:
-            - containerPort: 6379
-          volumeMounts:
-            - name: data
-              mountPath: /data
-          command: [ "sh", "-c" ]
+          command: ["/bin/bash", "-c"]
           args:
-            - |
-              if [ "$(hostname)" = "${PREFIX}-redis-0" ]; then
-                echo "Starting as primary"
-                exec redis-server \
-                  --appendonly yes \
-                  --requirepass "$REDIS_PASSWORD" \
-                  --save 60 1 \
-                  --loglevel warning
-              else
-                echo "Starting as replica of ${PREFIX}-redis-0"
-                exec redis-server \
-                  --appendonly yes \
-                  --requirepass "$REDIS_PASSWORD" \
-                  --masterauth "$REDIS_PASSWORD" \
-                  --save 60 1 \
-                  --loglevel warning \
-                  --replicaof "${PREFIX}-redis-0.${PREFIX}-redis.${NAMESPACE}.svc.cluster.local 6379"
-              fi
+          - |
+            ORDINAL=${HOSTNAME##*-}
+            exec docker-entrypoint.sh \
+              --server-id=$((ORDINAL + 1)) \
+              --gtid-mode=ON \
+              --enforce-gtid-consistency=ON \
+              --log-bin=mysql-bin \
+              --binlog-format=ROW \
+              --bind-address=0.0.0.0 \
+              --relay-log=mysql-${HOSTNAME}-relay-bin
+          ports:
+          - containerPort: 3306
+            name: mysql
           envFrom:
             - secretRef:
-                name: {{ include "hsr.name" . }}-redis
-          env:
-            - name: NAMESPACE
-              value: {{ .Values.namespace }}
-            - name: PREFIX
-              value: {{ include "hsr.name" . }}
-          readinessProbe:
-            tcpSocket:
-              port: 6379
-            initialDelaySeconds: 5
+                name: {{ include "hsr.name" . }}-mysql
+          volumeMounts:
+          - name: mysql
+            mountPath: /var/lib/mysql
+          - name: init-script
+            mountPath: /docker-entrypoint-initdb.d
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "1000m"
+              memory: "2Gi"
+          livenessProbe:
+            exec:
+              command: ["mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+            initialDelaySeconds: 30
             periodSeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            exec:
+              command: ["mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 2
+      volumes:
+      - name: init-script
+        configMap:
+          name: {{ include "hsr.name" . }}-mysql-init-script
+          defaultMode: 0755
       terminationGracePeriodSeconds: 10
   volumeClaimTemplates:
-    - metadata:
-        name: data
-      spec:
-        accessModes: ["ReadWriteOnce"]
-        resources:
-          requests:
-            storage: {{- printf "%sGi" .Values.redis.storageSize -}}
+  - metadata:
+      name: mysql
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{- printf "%sGi" .Values.mysql.storageSize -}}
 {{- end }}

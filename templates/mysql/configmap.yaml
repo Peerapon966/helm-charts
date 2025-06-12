@@ -1,0 +1,67 @@
+{{- if .Values.mysql.useLocal }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "hsr.name" . }}-mysql-init-script
+data:
+  set-replica.sh: |
+    #!/bin/bash
+
+    if [[ -z "$REPLICA_PASSWORD" ]]; then
+      echo "REPLICA_PASSWORD is not set"
+      exit 1
+    fi
+
+    if [[ "$HOSTNAME" == "mysql-0" ]]; then
+      echo "Configuring primary..."
+      mysql -u root -p$MYSQL_ROOT_PASSWORD -e "
+        # disable binlog for primary to avoid create user statements being logged and replicated
+        SET SESSION sql_log_bin=0;
+        
+        CREATE USER IF NOT EXISTS 'repl'@'%' IDENTIFIED WITH mysql_native_password BY '$REPLICA_PASSWORD';
+        GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%';
+        
+        CREATE USER IF NOT EXISTS '$NEXT_USER'@'%' IDENTIFIED WITH mysql_native_password BY '$NEXT_PASSWORD';
+        GRANT SELECT, INSERT, UPDATE, DELETE ON starrail.* TO '$NEXT_USER'@'%';
+        
+        FLUSH PRIVILEGES;
+
+        # re-enable binlog for primary
+        SET SESSION sql_log_bin=1;"
+    else
+      echo "Configuring replica..."
+
+      timeout=60
+      count=0
+      until mysqladmin ping -h mysql-0.mysql.mysql.svc.cluster.local --silent || [ $count -ge $timeout ]; do
+        sleep 2
+        count=$((count + 2))
+      done
+
+      if [ $count -ge $timeout ]; then
+        echo "Timed out waiting for primary"
+        exit 1
+      fi
+
+      mysql -u root -p$MYSQL_ROOT_PASSWORD -e "
+        # disable binlog for primary to avoid create user statements being logged
+        SET SESSION sql_log_bin=0;
+        
+        CREATE USER IF NOT EXISTS '$NEXT_USER'@'%' IDENTIFIED WITH mysql_native_password BY '$NEXT_PASSWORD';
+        GRANT SELECT, INSERT, UPDATE, DELETE ON starrail.* TO '$NEXT_USER'@'%';
+        
+        FLUSH PRIVILEGES;
+
+        # re-enable binlog for primary
+        SET SESSION sql_log_bin=1;
+
+        CHANGE REPLICATION SOURCE TO
+        SOURCE_HOST='mysql-0.mysql.mysql.svc.cluster.local',
+        SOURCE_USER='repl',
+        SOURCE_PASSWORD='$REPLICA_PASSWORD',
+        SOURCE_AUTO_POSITION=1;
+
+        START REPLICA;"
+    fi
+{{- end }}
