@@ -1,6 +1,8 @@
 {
-  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
+  "title": "HSR Helm Chart Values Schema",
+  "required": ["hostname", "namespace"],
   "properties": {
     "hostname": {
       "type": "string",
@@ -8,247 +10,342 @@
     },
     "namespace": {
       "type": "string",
-      "description": "The Kubernetes namespace in which all resources will be deployed"
+      "description": "The Kubernetes namespace in which all resources will be deployed",
+      "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
+      "maxLength": 63
     },
     "next": {
       "type": "object",
       "properties": {
         "version": {
           "type": "string",
-          "description": "Docker image tag or version of the Next.js application"
+          "description": "Docker image tag or version of the Next.js application",
+          "default": "1.0.0"
         },
         "replicas": {
           "type": "integer",
+          "description": "Number of replicas to run for the Next.js application",
           "minimum": 1,
-          "description": "Number of replicas to run for the Next.js application"
+          "default": 2
         },
         "path": {
           "type": "string",
-          "description": "The base path on which the Next.js app is served behind the ingress"
+          "description": "The base path on which the Next.js app is served behind the ingress",
+          "pattern": "^/.*",
+          "default": "/"
         },
         "port": {
           "type": "integer",
-          "description": "The port on which the Next.js application listens"
+          "description": "The port on which the Next.js application listens",
+          "minimum": 1,
+          "maximum": 65535,
+          "default": 3000
         },
         "allowControlPlane": {
           "type": "boolean",
-          "description": "Whether to allow scheduling Next.js pods on control plane nodes"
+          "description": "Whether to allow scheduling Next.js pods on control plane nodes",
+          "default": false
+        },
+        "nextAuth": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "The canonical URL of your site (e.g., https://example.com or http://localhost:3000 for dev)",
+              "format": "uri"
+            },
+            "secret": {
+              "type": "string",
+              "description": "Random string used to hash tokens, sign/encrypt cookies and generate cryptographic keys",
+              "minLength": 32
+            },
+            "googleClientId": {
+              "type": "string",
+              "description": "Google OAuth 2.0 client ID from Google Cloud Console",
+              "pattern": "^[0-9]+-[a-zA-Z0-9_]+\\.apps\\.googleusercontent\\.com$"
+            },
+            "googleClientSecret": {
+              "type": "string",
+              "description": "Google OAuth 2.0 client secret from Google Cloud Console",
+              "pattern": "^GOCSPX-[a-zA-Z0-9_-]+$"
+            }
+          },
+          "additionalProperties": false
         }
       },
-      "required": [
-        "version",
-        "replicas",
-        "path",
-        "port"
-      ]
+      "additionalProperties": false
     },
     "mysql": {
       "type": "object",
       "properties": {
         "useLocal": {
           "type": "boolean",
-          "description": "Whether to deploy MySQL locally as a StatefulSet"
+          "description": "Whether to deploy MySQL locally as a StatefulSet",
+          "default": true
         },
         "version": {
           "type": "string",
-          "description": "MySQL Docker image version"
+          "description": "MySQL Docker image version (only relevant when useLocal is true)",
+          "default": "8.0"
         },
         "replicas": {
           "type": "integer",
+          "description": "Number of MySQL replicas to deploy (only relevant when useLocal is true)",
           "minimum": 1,
-          "description": "Number of MySQL replicas to deploy"
+          "default": 3
         },
         "storageSize": {
           "type": "integer",
-          "description": "Size (in Gi) of the persistent volume for MySQL"
+          "description": "Size (in Gi) of the persistent volume for MySQL (only relevant when useLocal is true)",
+          "minimum": 1,
+          "default": 10
         },
         "allowControlPlane": {
           "type": "boolean",
-          "description": "Whether to allow scheduling MySQL pods on control plane nodes"
+          "description": "Whether to allow scheduling MySQL pods on control plane nodes (only relevant when useLocal is true)",
+          "default": false
+        },
+        "dataVersion": {
+          "type": "string",
+          "description": "Tag of the MySQL dump image used to seed the database (only relevant when useLocal is true)",
+          "default": "20241224"
         },
         "connection": {
           "type": "object",
           "properties": {
             "host": {
               "type": "string",
-              "description": "Hostname for MySQL service"
+              "description": "Hostname for MySQL service (only relevant when useLocal is false)",
+              "minLength": 1
             },
             "user": {
               "type": "string",
-              "description": "MySQL user for application access"
+              "description": "MySQL user for application access",
+              "minLength": 1
             },
             "password": {
               "type": "string",
-              "description": "Password for the MySQL user"
+              "description": "Password for the MySQL user",
+              "minLength": 1
             },
             "port": {
               "type": "integer",
-              "description": "MySQL port number"
+              "description": "MySQL port number",
+              "minimum": 1,
+              "maximum": 65535,
+              "default": 3306
             },
             "database": {
               "type": "string",
-              "description": "MySQL database name"
+              "description": "MySQL database name",
+              "minLength": 1,
+              "default": "starrail"
+            },
+            "timezone": {
+              "type": "string",
+              "description": "Timezone to be set in the MySQL container (e.g., UTC, Asia/Tokyo; only relevant when useLocal is true)",
+              "pattern": "^[A-Za-z_]+/[A-Za-z_]+$|^UTC$",
+              "default": "Asia/Bangkok"
+            },
+            "rootPassword": {
+              "type": "string",
+              "description": "Root user password for the MySQL instance (only relevant when useLocal is true)",
+              "minLength": 1
             }
           },
-          "required": [
-            "port",
-            "database"
-          ]
+          "additionalProperties": false
         }
       },
-      "required": [
-        "useLocal",
-        "version",
-        "replicas",
-        "storageSize",
-        "allowControlPlane",
-        "connection"
-      ]
+      "allOf": [
+        {
+          "if": {
+            "properties": { "useLocal": { "const": false } }
+          },
+          "then": {
+            "properties": {
+              "connection": {
+                "required": ["host", "user", "password"]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "useLocal": { "const": true } }
+          },
+          "then": {
+            "properties": {
+              "connection": {
+                "required": ["user", "password", "rootPassword"]
+              }
+            }
+          }
+        }
+      ],
+      "additionalProperties": false
     },
     "phpmyadmin": {
       "type": "object",
       "properties": {
         "enabled": {
           "type": "boolean",
-          "description": "Whether to deploy phpMyAdmin"
+          "description": "Whether to deploy phpMyAdmin",
+          "default": true
         },
         "version": {
           "type": "string",
-          "description": "Docker image tag or version of phpMyAdmin"
+          "description": "Docker image tag or version of phpMyAdmin",
+          "default": "5.1.1"
         },
         "replicas": {
           "type": "integer",
-          "description": "Number of phpMyAdmin replicas to deploy"
+          "description": "Number of phpMyAdmin replicas to deploy",
+          "minimum": 1,
+          "default": 1
         },
         "path": {
           "type": "string",
-          "description": "The path at which phpMyAdmin is exposed behind the ingress"
+          "description": "The path at which phpMyAdmin is exposed behind the ingress",
+          "pattern": "^/.*",
+          "default": "/phpmyadmin"
         },
         "port": {
           "type": "integer",
-          "description": "The port on which phpMyAdmin container listens"
+          "description": "The port on which phpMyAdmin container listens",
+          "minimum": 1,
+          "maximum": 65535,
+          "default": 8080
         },
         "arbitrary": {
           "type": "boolean",
-          "description": "Enables PMA_ARBITRARY=1 for arbitrary MySQL server connections"
+          "description": "Enables PMA_ARBITRARY=1, allowing connections to arbitrary MySQL servers",
+          "default": true
         },
         "allowControlPlane": {
           "type": "boolean",
-          "description": "Whether to allow scheduling phpMyAdmin pods on control plane nodes"
+          "description": "Whether to allow scheduling phpMyAdmin pods on control plane nodes",
+          "default": false
         }
       },
-      "required": [
-        "enabled",
-        "version",
-        "replicas",
-        "path",
-        "port",
-        "arbitrary"
-      ]
+      "additionalProperties": false
     },
     "redis": {
       "type": "object",
       "properties": {
         "useLocal": {
           "type": "boolean",
-          "description": "Whether to deploy Redis as a local StatefulSet"
+          "description": "Whether to deploy Redis as a local StatefulSet (true) or use an external Redis instance (false)",
+          "default": true
         },
         "version": {
           "type": "string",
-          "description": "Redis image version to use"
+          "description": "Redis image version to use (only relevant when useLocal is true)",
+          "default": "8-alpine"
         },
         "replicas": {
           "type": "integer",
+          "description": "Number of Redis replicas (only relevant when useLocal is true)",
           "minimum": 1,
-          "description": "Number of Redis replicas"
+          "default": 3
         },
         "storageSize": {
           "type": "integer",
-          "description": "Size (in Gi) of the persistent volume for Redis"
+          "description": "Size (in Gi) of the persistent volume for Redis (only relevant when useLocal is true)",
+          "minimum": 1,
+          "default": 1
         },
         "allowControlPlane": {
           "type": "boolean",
-          "description": "Whether to allow scheduling Redis pods on control plane nodes"
+          "description": "Whether to allow scheduling Redis pods on control plane nodes (only relevant when useLocal is true)",
+          "default": false
         },
         "connection": {
           "type": "object",
           "properties": {
             "host": {
               "type": "string",
-              "description": "Redis hostname or service DNS"
+              "description": "Redis hostname or service DNS (only relevant when useLocal is false)",
+              "minLength": 1
             },
             "port": {
               "type": "integer",
-              "description": "Redis port number"
+              "description": "Redis port number",
+              "minimum": 1,
+              "maximum": 65535,
+              "default": 6379
             },
             "password": {
               "type": "string",
-              "description": "Password used to connect to Redis"
+              "description": "Password used to connect to Redis",
+              "minLength": 1
             }
           },
-          "required": [
-            "port"
-          ]
+          "additionalProperties": false
         }
       },
-      "required": [
-        "useLocal",
-        "version",
-        "replicas",
-        "storageSize",
-        "allowControlPlane",
-        "connection"
-      ]
+      "allOf": [
+        {
+          "if": {
+            "properties": { "useLocal": { "const": false } }
+          },
+          "then": {
+            "properties": {
+              "connection": {
+                "required": ["host"]
+              }
+            }
+          }
+        }
+      ],
+      "additionalProperties": false
     },
     "mailhog": {
       "type": "object",
       "properties": {
         "enabled": {
           "type": "boolean",
-          "description": "Whether to deploy MailHog"
+          "description": "Whether to deploy MailHog",
+          "default": true
         },
         "version": {
           "type": "string",
-          "description": "MailHog Docker image version"
+          "description": "MailHog Docker image version",
+          "default": "v1.0.1"
         },
         "replicas": {
           "type": "integer",
-          "description": "Number of MailHog replicas to deploy"
+          "description": "Number of MailHog replicas to deploy",
+          "minimum": 1,
+          "default": 1
         },
         "path": {
           "type": "string",
-          "description": "The path at which MailHog is exposed behind the ingress"
+          "description": "The path at which MailHog is exposed behind the ingress",
+          "pattern": "^/.*",
+          "default": "/mailhog"
         },
         "port": {
           "type": "integer",
-          "description": "The port on which the MailHog web UI is exposed"
+          "description": "The port on which the MailHog web UI is exposed",
+          "minimum": 1,
+          "maximum": 65535,
+          "default": 8025
         },
         "smtpPort": {
           "type": "integer",
-          "description": "The port on which MailHog listens for SMTP traffic"
+          "description": "The port on which MailHog listens for SMTP traffic",
+          "minimum": 1,
+          "maximum": 65535,
+          "default": 1025
         },
         "allowControlPlane": {
           "type": "boolean",
-          "description": "Whether to allow scheduling MailHog pods on control plane nodes"
+          "description": "Whether to allow scheduling MailHog pods on control plane nodes",
+          "default": false
         }
       },
-      "required": [
-        "enabled",
-        "version",
-        "replicas",
-        "path",
-        "port",
-        "smtpPort"
-      ]
+      "additionalProperties": false
     }
   },
-  "required": [
-    "hostname",
-    "namespace",
-    "next",
-    "mysql",
-    "phpmyadmin",
-    "redis",
-    "mailhog"
-  ]
+  "additionalProperties": false
 }

@@ -22,7 +22,7 @@ spec:
       {{- end }}
       containers:
         - name: phpmyadmin
-          image: {{- printf "phpmyadmin:%s" (default "latest" .Values.phpmyadmin.version) -}}
+          image: {{- printf "phpmyadmin:%s" (default "latest" .Values.phpmyadmin.version) }}
           ports:
             - containerPort: 80
           envFrom:

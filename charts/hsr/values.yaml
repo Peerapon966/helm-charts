@@ -21,9 +21,16 @@ next:
   allowControlPlane: false
 
   nextAuth:
+    # next.nextAuth.url - The canonical URL of your site (e.g., https://example.com or http://localhost:3000 for dev)
     url: 
+    
+    # next.nextAuth.secret - Random string used to hash tokens, sign/encrypt cookies and generate cryptographic keys
     secret: 
+    
+    # next.nextAuth.googleClientId - Google OAuth 2.0 client ID from Google Cloud Console
     googleClientId: 
+    
+    # next.nextAuth.googleClientSecret - Google OAuth 2.0 client secret from Google Cloud Console
     googleClientSecret:
 
 mysql:
@@ -46,7 +53,7 @@ mysql:
   dataVersion: "20241224"
 
   connection:
-    # mysql.connection.host - Hostname for MySQL service (only relevant when useLocal is true)
+    # mysql.connection.host - Hostname for MySQL service (only relevant when useLocal is false)
     host: 
 
     # mysql.connection.user - MySQL user for application access
@@ -106,7 +113,7 @@ redis:
   allowControlPlane: false
 
   connection:
-    # redis.connection.host - Redis hostname or service DNS (only relevant when useLocal is true)
+    # redis.connection.host - Redis hostname or service DNS (only relevant when useLocal is false)
     host: 
 
     # redis.connection.port - Redis port number
