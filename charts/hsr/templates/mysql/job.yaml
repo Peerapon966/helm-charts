@@ -21,7 +21,7 @@ spec:
 
       containers:
       - name: mysql-client
-        image: {{- printf "mysql:%s" (default "latest" .Values.mysql.version) }}
+        image: {{ printf "mysql:%s" (default "latest" .Values.mysql.version) }}
         envFrom:
         - secretRef:
             name: {{ include "hsr.name" . }}-mysql

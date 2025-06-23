@@ -23,7 +23,7 @@ spec:
       {{- end }}
       containers:
         - name: redis
-          image: {{- printf "redis:%s" (default "latest" .Values.redis.version) }}
+          image: {{ printf "redis:%s" (default "latest" .Values.redis.version) }}
           ports:
             - containerPort: 6379
           volumeMounts:

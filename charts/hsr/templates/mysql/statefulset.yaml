@@ -23,7 +23,7 @@ spec:
       {{- end }}
       containers:
         - name: mysql
-          image: {{- printf "mysql:%s" (default "latest" .Values.mysql.version) }}
+          image: {{ printf "mysql:%s" (default "latest" .Values.mysql.version) }}
           command: ["/bin/bash", "-c"]
           args:
           - |

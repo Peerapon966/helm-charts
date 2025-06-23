@@ -1,4 +1,4 @@
-apiVersion: v1
+apiVersion: v2
 name: hsr
 version: v0.1.0
 description: Honkai Starrail official website Helm chart

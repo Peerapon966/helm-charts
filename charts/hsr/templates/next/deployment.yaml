@@ -21,7 +21,7 @@ spec:
       {{- end }}
       containers:
         - name: next
-          image: {{- printf "heftychonk/next:%s" .Values.next.version -}}
+          image: {{ printf "heftychonk/next:%s" .Values.next.version }}
           ports:
             - containerPort: 3000
           envFrom:
