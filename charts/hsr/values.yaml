@@ -4,6 +4,9 @@ hostname: "hsr.local"
 # namespace - The Kubernetes namespace in which all resources will be deployed
 namespace: "hsr"
 
+# ingressClassName - The name of the Ingress class to use for the Ingress resources
+ingressClassName: "nginx"
+
 next:
   # next.version - Docker image tag or version of the Next.js application
   version: "1.0.0"

@@ -2,7 +2,10 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "title": "HSR Helm Chart Values Schema",
-  "required": ["hostname", "namespace"],
+  "required": [
+    "hostname",
+    "namespace"
+  ],
   "properties": {
     "hostname": {
       "type": "string",
@@ -13,6 +16,10 @@
       "description": "The Kubernetes namespace in which all resources will be deployed",
       "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$",
       "maxLength": 63
+    },
+    "ingressClassName": {
+      "type": "string",
+      "description": "The name of the Ingress class to use for the Ingress resources"
     },
     "next": {
       "type": "object",
@@ -159,24 +166,40 @@
       "allOf": [
         {
           "if": {
-            "properties": { "useLocal": { "const": false } }
+            "properties": {
+              "useLocal": {
+                "const": false
+              }
+            }
           },
           "then": {
             "properties": {
               "connection": {
-                "required": ["host", "user", "password"]
+                "required": [
+                  "host",
+                  "user",
+                  "password"
+                ]
               }
             }
           }
         },
         {
           "if": {
-            "properties": { "useLocal": { "const": true } }
+            "properties": {
+              "useLocal": {
+                "const": true
+              }
+            }
           },
           "then": {
             "properties": {
               "connection": {
-                "required": ["user", "password", "rootPassword"]
+                "required": [
+                  "user",
+                  "password",
+                  "rootPassword"
+                ]
               }
             }
           }
@@ -286,12 +309,18 @@
       "allOf": [
         {
           "if": {
-            "properties": { "useLocal": { "const": false } }
+            "properties": {
+              "useLocal": {
+                "const": false
+              }
+            }
           },
           "then": {
             "properties": {
               "connection": {
-                "required": ["host"]
+                "required": [
+                  "host"
+                ]
               }
             }
           }
