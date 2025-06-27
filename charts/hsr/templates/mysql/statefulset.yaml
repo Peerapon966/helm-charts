@@ -80,5 +80,5 @@ spec:
         - ReadWriteOnce
       resources:
         requests:
-          storage: {{- printf "%sGi" .Values.mysql.storageSize -}}
+          storage: {{ .Values.mysql.storageSize }}Gi
 {{- end }}

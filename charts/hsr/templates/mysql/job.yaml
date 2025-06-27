@@ -40,6 +40,13 @@ spec:
         volumeMounts:
         - name: shared-sql
           mountPath: /data
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "0.5Gi"
+          limits:
+            cpu: "1000m"
+            memory: "1Gi"
       restartPolicy: Never
   backoffLimit: 4
 {{- end }}

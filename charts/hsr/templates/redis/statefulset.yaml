@@ -62,6 +62,13 @@ spec:
               port: 6379
             initialDelaySeconds: 5
             periodSeconds: 10
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "1000m"
+              memory: "2Gi"
       terminationGracePeriodSeconds: 10
   volumeClaimTemplates:
     - metadata:
@@ -70,5 +77,5 @@ spec:
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
-            storage: {{- printf "%sGi" .Values.redis.storageSize -}}
+            storage: {{ .Values.redis.storageSize }}Gi
 {{- end }}
