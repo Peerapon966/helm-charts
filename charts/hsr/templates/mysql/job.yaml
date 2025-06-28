@@ -9,12 +9,14 @@ spec:
     spec:
       securityContext:
         runAsNonRoot: true
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop: ["ALL"]
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        readOnlyRootFilesystem: true
         seccompProfile:
           type: RuntimeDefault
-          
+
       volumes:
       - name: shared-sql
         emptyDir: {}
@@ -22,6 +24,10 @@ spec:
       initContainers:
       - name: starrail-bak
         image: {{ printf "heftychonk/starrail-bak:%s" .Values.mysql.dataVersion }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
         command: ["sh", "-c", "cp /starrail_bak.sql /data/starrail_bak.sql"]
         volumeMounts:
         - name: shared-sql
@@ -30,6 +36,10 @@ spec:
       containers:
       - name: mysql-client
         image: {{ printf "mysql:%s" (default "latest" .Values.mysql.version) }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
         envFrom:
         - secretRef:
             name: {{ include "hsr.name" . }}-mysql

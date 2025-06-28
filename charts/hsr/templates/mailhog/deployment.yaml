@@ -22,14 +22,16 @@ spec:
       {{- end }}
       securityContext:
         runAsNonRoot: true
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop: ["ALL"]
+        runAsUser: 1000
         seccompProfile:
           type: RuntimeDefault
       containers:
         - name: mailhog
           image: {{ printf "mailhog/mailhog:%s" (default "latest" .Values.mailhog.version) }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
           ports:
             - containerPort: 1025
               name: smtp

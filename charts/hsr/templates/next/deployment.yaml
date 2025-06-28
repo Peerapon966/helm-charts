@@ -21,14 +21,16 @@ spec:
       {{- end }}
       securityContext:
         runAsNonRoot: true
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop: ["ALL"]
+        runAsUser: 1000
         seccompProfile:
           type: RuntimeDefault
       containers:
         - name: next
           image: {{ printf "heftychonk/next:%s" .Values.next.version }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
           ports:
             - containerPort: 3000
           envFrom:

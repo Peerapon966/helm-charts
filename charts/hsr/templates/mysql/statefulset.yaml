@@ -23,14 +23,20 @@ spec:
       {{- end }}
       securityContext:
         runAsNonRoot: true
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop: ["ALL"]
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        readOnlyRootFilesystem: true
         seccompProfile:
           type: RuntimeDefault
       containers:
         - name: mysql
           image: {{ printf "mysql:%s" (default "latest" .Values.mysql.version) }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
           command: ["/bin/bash", "-c"]
           args:
           - |

@@ -22,14 +22,16 @@ spec:
       {{- end }}
       securityContext:
         runAsNonRoot: true
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop: ["ALL"]
+        runAsUser: 1000
         seccompProfile:
           type: RuntimeDefault
       containers:
         - name: phpmyadmin
           image: {{ printf "phpmyadmin:%s" (default "latest" .Values.phpmyadmin.version) }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
           ports:
             - containerPort: 80
           envFrom:
