@@ -21,6 +21,13 @@ spec:
           operator: Exists
           effect: NoSchedule
       {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: ["ALL"]
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: redis
           image: {{ printf "redis:%s" (default "latest" .Values.redis.version) }}

@@ -19,6 +19,13 @@ spec:
           operator: Exists
           effect: NoSchedule
       {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: ["ALL"]
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: next
           image: {{ printf "heftychonk/next:%s" .Values.next.version }}

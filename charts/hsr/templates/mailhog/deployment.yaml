@@ -20,6 +20,13 @@ spec:
           operator: Exists
           effect: NoSchedule
       {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: ["ALL"]
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: mailhog
           image: {{ printf "mailhog/mailhog:%s" (default "latest" .Values.mailhog.version) }}

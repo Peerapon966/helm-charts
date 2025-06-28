@@ -20,6 +20,13 @@ spec:
           operator: Exists
           effect: NoSchedule
       {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: ["ALL"]
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: phpmyadmin
           image: {{ printf "phpmyadmin:%s" (default "latest" .Values.phpmyadmin.version) }}
