@@ -3,6 +3,21 @@ entries:
   hsr:
   - apiVersion: v2
     appVersion: v0.0.1
+    created: "2025-06-29T15:24:13.885156097Z"
+    description: Honkai Starrail official website Helm chart
+    digest: b585dea29f9468145aaaae7fb44b97d37457e3e0e509b0d8c01beaeaa1951587
+    maintainers:
+    - name: Peerapon966
+      url: https://github.com/Peerapon966
+    name: hsr
+    sources:
+    - https://github.com/Peerapon966/hsr
+    type: application
+    urls:
+    - https://github.com/Peerapon966/helm-charts/releases/download/hsr-v0.1.5/hsr-v0.1.5.tgz
+    version: v0.1.5
+  - apiVersion: v2
+    appVersion: v0.0.1
     created: "2025-06-28T18:50:25.003757372Z"
     description: Honkai Starrail official website Helm chart
     digest: 66f5661a1b756d4a0665eb72fe1fdd91e80dcf66ae9c11cac1e3b363652b22a8
@@ -81,4 +96,4 @@ entries:
     urls:
     - https://github.com/Peerapon966/hsr-helm-charts/releases/download/hsr-v0.1.0/hsr-v0.1.0.tgz
     version: v0.1.0
-generated: "2025-06-28T18:50:25.003775546Z"
+generated: "2025-06-29T15:24:13.885181114Z"
