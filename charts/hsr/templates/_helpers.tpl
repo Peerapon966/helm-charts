@@ -104,3 +104,10 @@ Usage:
 {{- printf "redis://default:%s@%s:%s" .password (include "hsr.redisHost" $) (toString .port) -}}
 {{- end }}
 {{- end }}
+
+{{/*
+Generate the SMTP host URL.
+*/}}
+{{- define "hsr.smtpHost" -}}
+{{- printf "%s-mailhog-0.%s-mailhog.%s.svc.cluster.local" (include "hsr.name" .) (include "hsr.name" .) .Values.namespace -}}
+{{- end }}

@@ -88,6 +88,9 @@ spec:
         name: data
       spec:
         accessModes: ["ReadWriteOnce"]
+        {{- if .Values.redis.storageClass }}
+        storageClassName: {{ .Values.redis.storageClass | quote }}
+        {{- end }}
         resources:
           requests:
             storage: {{ .Values.redis.storageSize }}Gi

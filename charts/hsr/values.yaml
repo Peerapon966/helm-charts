@@ -49,6 +49,10 @@ mysql:
   # mysql.storageSize - Size (in Gi) of the persistent volume for MySQL (only relevant when useLocal is true)
   storageSize: 10
 
+  # mysql.storageClass - Storage class to use for MySQL persistent volumes (only relevant when useLocal is true)
+  # If not specified, the application will use the default storage class of the cluster
+  storageClass: 
+
   # mysql.allowControlPlane - Whether to allow scheduling MySQL pods on control plane nodes
   allowControlPlane: false
 
@@ -111,6 +115,10 @@ redis:
 
   # redis.storageSize - Size (in Gi) of the persistent volume for Redis (only relevant when useLocal is true)
   storageSize: 1
+
+  # redis.storageClass - Storage class to use for Redis persistent volumes (only relevant when useLocal is true)
+  # If not specified, the application will use the default storage class of the cluster
+  storageClass: 
 
   # redis.allowControlPlane - Whether to allow scheduling Redis pods on control plane nodes (only relevant when useLocal is true)
   allowControlPlane: false

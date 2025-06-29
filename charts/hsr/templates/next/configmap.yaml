@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "hsr.name" . }}-next
+  labels:
+    app.kubernetes.io/name: {{ include "hsr.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+data:
+  BASE_URL: {{ printf "http://%s" .Values.hostname | quote }}
+  ASSET_PREFIX: {{ printf "http://%s" .Values.hostname | quote }}
+  SMTP_HOST: {{ include "hsr.smtpHost" . | quote }}
+  SMTP_PORT: {{ .Values.smtp.port }}
