@@ -108,9 +108,12 @@
           "default": 10
         },
         "storageClass": {
-          "type": "string",
+          "type": [
+            "string",
+            "null"
+          ],
           "description": "Storage class to use for MySQL persistent volumes (only relevant when useLocal is true). If not specified, the default storage class of the cluster will be used.",
-          "default": ""
+          "default": null
         },
         "allowControlPlane": {
           "type": "boolean",
@@ -283,9 +286,12 @@
           "default": 1
         },
         "storageClass": {
-          "type": "string",
+          "type": [
+            "string",
+            "null"
+          ],
           "description": "Storage class to use for MySQL persistent volumes (only relevant when useLocal is true). If not specified, the default storage class of the cluster will be used.",
-          "default": ""
+          "default": null
         },
         "allowControlPlane": {
           "type": "boolean",
