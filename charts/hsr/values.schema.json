@@ -107,6 +107,11 @@
           "minimum": 1,
           "default": 10
         },
+        "storageClass": {
+          "type": "string",
+          "description": "Storage class to use for MySQL persistent volumes (only relevant when useLocal is true). If not specified, the default storage class of the cluster will be used.",
+          "default": ""
+        },
         "allowControlPlane": {
           "type": "boolean",
           "description": "Whether to allow scheduling MySQL pods on control plane nodes (only relevant when useLocal is true)",
@@ -276,6 +281,11 @@
           "description": "Size (in Gi) of the persistent volume for Redis (only relevant when useLocal is true)",
           "minimum": 1,
           "default": 1
+        },
+        "storageClass": {
+          "type": "string",
+          "description": "Storage class to use for MySQL persistent volumes (only relevant when useLocal is true). If not specified, the default storage class of the cluster will be used.",
+          "default": ""
         },
         "allowControlPlane": {
           "type": "boolean",
