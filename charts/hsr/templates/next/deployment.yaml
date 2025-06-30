@@ -27,6 +27,9 @@ spec:
       containers:
         - name: next
           image: {{ printf "heftychonk/next:%s" .Values.next.version }}
+          {{- if .Values.next.forcePullImage }}
+          imagePullPolicy: Always
+          {{- end }}
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:

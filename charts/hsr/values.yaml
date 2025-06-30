@@ -20,6 +20,9 @@ next:
   # next.port - The port on which the Next.js application listens
   port: 3000
 
+  # next.forcePullImage - Whether to always pull the image from the registry even if it exists locally
+  forcePullImage: false
+
   # next.allowControlPlane - Whether to allow scheduling Next.js pods on control plane nodes
   allowControlPlane: false
 

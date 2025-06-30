@@ -48,6 +48,11 @@
           "maximum": 65535,
           "default": 3000
         },
+        "forcePullImage": {
+          "type": "boolean",
+          "description": "Whether to always pull the image from the registry even if it exists locally",
+          "default": false
+        },
         "allowControlPlane": {
           "type": "boolean",
           "description": "Whether to allow scheduling Next.js pods on control plane nodes",
