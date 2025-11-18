@@ -22,8 +22,8 @@ data:
         CREATE USER IF NOT EXISTS 'repl'@'%' IDENTIFIED WITH mysql_native_password BY '$REPLICA_PASSWORD';
         GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%';
         
-        CREATE USER IF NOT EXISTS "$NEXT_USER'@'%" IDENTIFIED WITH mysql_native_password BY '$NEXT_PASSWORD';
-        GRANT SELECT, INSERT, UPDATE, DELETE ON starrail.* TO "$NEXT_USER'@'%";
+        CREATE USER IF NOT EXISTS '${NEXT_USER}'@'%' IDENTIFIED WITH mysql_native_password BY '$NEXT_PASSWORD';
+        GRANT SELECT, INSERT, UPDATE, DELETE ON starrail.* TO '${NEXT_USER}'@'%';
         
         FLUSH PRIVILEGES;
 
@@ -48,8 +48,8 @@ data:
         # disable binlog for primary to avoid create user statements being logged
         SET SESSION sql_log_bin=0;
         
-        CREATE USER IF NOT EXISTS "$NEXT_USER'@'%" IDENTIFIED WITH mysql_native_password BY '$NEXT_PASSWORD';
-        GRANT SELECT, INSERT, UPDATE, DELETE ON starrail.* TO "$NEXT_USER'@'%";
+        CREATE USER IF NOT EXISTS '${NEXT_USER}'@'%' IDENTIFIED WITH mysql_native_password BY '$NEXT_PASSWORD';
+        GRANT SELECT, INSERT, UPDATE, DELETE ON starrail.* TO '${NEXT_USER}'@'%';
         
         FLUSH PRIVILEGES;
 
