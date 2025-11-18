@@ -1,6 +1,6 @@
 apiVersion: v2
 name: hsr
-version: v0.1.10
+version: v0.1.11
 description: Honkai Starrail official website Helm chart
 type: application
 sources:
@@ -12,4 +12,4 @@ sources:
 maintainers:
   - name: Peerapon966
     url: https://github.com/Peerapon966
-appVersion: "v0.0.2"
+appVersion: "v0.0.1"
