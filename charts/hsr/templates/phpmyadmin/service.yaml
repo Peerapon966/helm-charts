@@ -9,6 +9,6 @@ spec:
     app: {{ include "hsr.name" . }}-myphpadmin
   ports:
     - protocol: TCP
-      port: {{ int (default 8080 .Values.mysql.connection.port) }}
+      port: {{ int (default 8080 .Values.phpmyadmin.port) }}
       targetPort: 80
 {{- end }}
