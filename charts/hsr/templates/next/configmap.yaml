@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/name: {{ include "hsr.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
 data:
-  BASE_URL: {{ printf "http://%s" .Values.hostname | quote }}
+  SERVER_FETCH_BASE_URL: {{ .Values.publiclyAccessible | ternary (printf "http://%s" .Values.hostname) (printf "http://127.0.0.1:%s" (.Values.next.port | toString)) | quote }}
   ASSET_PREFIX: {{ printf "http://%s" .Values.hostname | quote }}
   SMTP_HOST: {{ include "hsr.smtpHost" . | quote }}
   SMTP_PORT: {{ .Values.mailhog.smtpPort | quote }}

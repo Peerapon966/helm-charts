@@ -7,9 +7,12 @@ namespace: "hsr"
 # ingressClassName - The name of the Ingress class to use for the Ingress resources
 ingressClassName: "nginx"
 
+# publiclyAccessible - Whether the services is deployed on local cluster or publicly accessible cluster
+publiclyAccessible: true
+
 next:
   # next.version - Docker image tag or version of the Next.js application
-  version: "1.0.0"
+  version: "latest"
 
   # next.replicas - Number of replicas to run for the Next.js application
   replicas: 2
