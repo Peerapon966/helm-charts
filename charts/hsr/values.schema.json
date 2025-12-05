@@ -66,24 +66,56 @@
           "type": "object",
           "properties": {
             "url": {
-              "type": "string",
               "description": "The canonical URL of your site (e.g., https://example.com or http://localhost:3000 for dev)",
-              "format": "uri"
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "uri"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
             },
             "secret": {
-              "type": "string",
               "description": "Random string used to hash tokens, sign/encrypt cookies and generate cryptographic keys",
-              "minLength": 32
+              "oneOf": [
+                {
+                  "type": "string",
+                  "minLength": 32
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
             },
             "googleClientId": {
-              "type": "string",
               "description": "Google OAuth 2.0 client ID from Google Cloud Console",
-              "pattern": "^[0-9]+-[a-zA-Z0-9_]+\\.apps\\.googleusercontent\\.com$"
+              "oneOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[0-9]+-[a-zA-Z0-9_]+\\.apps\\.googleusercontent\\.com$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
             },
             "googleClientSecret": {
-              "type": "string",
               "description": "Google OAuth 2.0 client secret from Google Cloud Console",
-              "pattern": "^GOCSPX-[a-zA-Z0-9_-]+$"
+              "oneOf": [
+                {
+                  "type": "string",
+                  "pattern": "^GOCSPX-[a-zA-Z0-9_-]+$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
             }
           },
           "additionalProperties": false
@@ -138,19 +170,31 @@
           "type": "object",
           "properties": {
             "host": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Hostname for MySQL service (only relevant when useLocal is false)",
-              "minLength": 1
+              "minLength": 1,
+              "default": null
             },
             "user": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "MySQL user for application access",
-              "minLength": 1
+              "minLength": 1,
+              "default": null
             },
             "password": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Password for the MySQL user",
-              "minLength": 1
+              "minLength": 1,
+              "default": null
             },
             "port": {
               "type": "integer",
@@ -196,9 +240,7 @@
             "properties": {
               "connection": {
                 "required": [
-                  "host",
-                  "user",
-                  "password"
+                  "host"
                 ]
               }
             }
@@ -216,8 +258,7 @@
             "properties": {
               "connection": {
                 "required": [
-                  "user",
-                  "password",
+                  "timezone",
                   "rootPassword"
                 ]
               }
@@ -314,9 +355,13 @@
           "type": "object",
           "properties": {
             "host": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Redis hostname or service DNS (only relevant when useLocal is false)",
-              "minLength": 1
+              "minLength": 1,
+              "default": null
             },
             "port": {
               "type": "integer",
@@ -326,9 +371,13 @@
               "default": 6379
             },
             "password": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "description": "Password used to connect to Redis",
-              "minLength": 1
+              "minLength": 1,
+              "default": null
             }
           },
           "additionalProperties": false

@@ -1,162 +1,164 @@
-# hostname - The base domain or internal hostname for services
-hostname: "hsr.local"
+# hostname - Base domain or in-cluster host served by this chart
+hostname: hsr.local
 
-# namespace - The Kubernetes namespace in which all resources will be deployed
-namespace: "hsr"
+# namespace - Namespace where the chart deploys everything
+namespace: hsr
 
-# ingressClassName - The name of the Ingress class to use for the Ingress resources
-ingressClassName: "nginx"
+# ingressClassName - Target IngressClass for all ingresses
+ingressClassName: nginx
 
-# publiclyAccessible - Whether the services is deployed on local cluster or publicly accessible cluster
+# publiclyAccessible - true for public clusters, false for local only
 publiclyAccessible: true
 
 next:
-  # next.version - Docker image tag or version of the Next.js application
-  version: "latest"
+  # next.version - Docker tag for the Next.js image
+  version: latest
 
-  # next.replicas - Number of replicas to run for the Next.js application
+  # next.replicas - Desired Next.js pod count
   replicas: 2
 
-  # next.path - The base path on which the Next.js app is served behind the ingress
-  path: "/"
+  # next.path - Ingress base path for the app
+  path: /
 
-  # next.port - The port on which the Next.js application listens
+  # next.port - Container listen port
   port: 3000
 
-  # next.forcePullImage - Whether to always pull the image from the registry even if it exists locally
+  # next.forcePullImage - Always pull the image even if cached
   forcePullImage: false
 
-  # next.allowControlPlane - Whether to allow scheduling Next.js pods on control plane nodes
+  # next.allowControlPlane - Permit scheduling on control-plane nodes
   allowControlPlane: false
 
   nextAuth:
-    # next.nextAuth.url - The canonical URL of your site (e.g., https://example.com or http://localhost:3000 for dev)
-    url: 
-    
-    # next.nextAuth.secret - Random string used to hash tokens, sign/encrypt cookies and generate cryptographic keys
-    secret: 
-    
-    # next.nextAuth.googleClientId - Google OAuth 2.0 client ID from Google Cloud Console
-    googleClientId: 
-    
-    # next.nextAuth.googleClientSecret - Google OAuth 2.0 client secret from Google Cloud Console
+    # next.nextAuth.url - Canonical site URL (e.g. https://example.com)
+    url: null
+
+    # next.nextAuth.secret - Token/cookie signing secret
+    secret: null
+
+    # next.nextAuth.googleClientId - Google OAuth client ID
+    googleClientId: null
+
+    # next.nextAuth.googleClientSecret - Google OAuth client secret
     googleClientSecret:
 
+      null
 mysql:
-  # mysql.useLocal - Whether to deploy MySQL locally as a StatefulSet
+  # mysql.useLocal - Deploy bundled MySQL StatefulSet
   useLocal: true
 
-  # mysql.version - MySQL Docker image version
-  version: "8.0"
+  # mysql.version - MySQL image tag (needed when useLocal)
+  version: '8.0'
 
-  # mysql.replicas - Number of MySQL replicas to deploy
+  # mysql.replicas - MySQL pod count (when useLocal)
   replicas: 3
 
-  # mysql.storageSize - Size (in Gi) of the persistent volume for MySQL (only relevant when useLocal is true)
+  # mysql.storageSize - Persistent volume size in Gi (useLocal)
   storageSize: 10
 
-  # mysql.storageClass - Storage class to use for MySQL persistent volumes (only relevant when useLocal is true)
-  # If not specified, the application will use the default storage class of the cluster
-  storageClass: 
+  # mysql.storageClass - StorageClass for MySQL PVCs (defaults to cluster default)
+  storageClass: null
 
-  # mysql.allowControlPlane - Whether to allow scheduling MySQL pods on control plane nodes
+  # mysql.allowControlPlane - Allow MySQL pods on control-plane nodes (useLocal)
   allowControlPlane: false
 
-  # mysql.dataVersion - Tag of the MySQL dump image used to seed the database (only relevant when useLocal is true)
-  dataVersion: "20241224"
+  # mysql.dataVersion - Tag of the seed dump image
+  dataVersion: '20241224'
 
   connection:
-    # mysql.connection.host - Hostname for MySQL service (only relevant when useLocal is false)
-    host: 
+    # mysql.connection.host - External MySQL host when not using local
+    host: null
 
-    # mysql.connection.user - MySQL user for application access
-    user: 
+    # mysql.connection.user - App-level MySQL username
+    user: null
 
-    # mysql.connection.password - Password for the MySQL user
-    password: 
+    # mysql.connection.password - Password for that user
+    password: null
 
-    # mysql.connection.port - MySQL port number
+    # mysql.connection.port - MySQL port
     port: 3306
 
-    # mysql.connection.database - MySQL database name
-    database: "starrail"
+    # mysql.connection.database - Schema name
+    database: starrail
 
-    # mysql.connection.timezone - Timezone to be set in the MySQL container (e.g., UTC, Asia/Tokyo; only relevant when useLocal is true)
-    timezone: "Asia/Bangkok"
+    # mysql.connection.timezone - Timezone set inside the MySQL container (required when useLocal)
+    timezone: Asia/Bangkok
 
-    # mysql.connection.rootPassword - Root user password for the MySQL instance (only relevant when useLocal is true)
-    rootPassword: 
+    # mysql.connection.rootPassword - Root password required when useLocal
+    rootPassword:
 
+      null
 phpmyadmin:
-  # phpmyadmin.enabled - Whether to deploy phpMyAdmin
+  # phpmyadmin.enabled - Deploy phpMyAdmin
   enabled: true
 
-  # phpmyadmin.version - Docker image tag or version of phpMyAdmin
-  version: "5.1.1"
+  # phpmyadmin.version - phpMyAdmin image tag
+  version: 5.1.1
 
-  # phpmyadmin.replicas - Number of phpMyAdmin replicas to deploy
+  # phpmyadmin.replicas - phpMyAdmin pod count
   replicas: 1
 
-  # phpmyadmin.path - The path at which phpMyAdmin is exposed behind the ingress
-  path: "/phpmyadmin"
+  # phpmyadmin.path - Ingress path for phpMyAdmin
+  path: /phpmyadmin
 
-  # phpmyadmin.port - The port on which phpMyAdmin container listens
+  # phpmyadmin.port - Container listen port
   port: 8080
 
-  # phpmyadmin.arbitrary - Enables PMA_ARBITRARY=1, allowing connections to arbitrary MySQL servers
+  # phpmyadmin.arbitrary - Enable PMA_ARBITRARY for external DBs
   arbitrary: true
 
-  # phpmyadmin.allowControlPlane - Whether to allow scheduling phpMyAdmin pods on control plane nodes
+  # phpmyadmin.allowControlPlane - Allow phpMyAdmin on control-plane nodes
   allowControlPlane: false
 
 redis:
-  # redis.useLocal - Whether to deploy Redis as a local StatefulSet (true) or use an external Redis instance (false)
+  # redis.useLocal - Deploy bundled Redis StatefulSet
   useLocal: true
 
-  # redis.version - Redis image version to use (only relevant when useLocal is true)
-  version: "8-alpine"
+  # redis.version - Redis image tag (when useLocal)
+  version: 8-alpine
 
-  # redis.replicas - Number of Redis replicas (only relevant when useLocal is true)
+  # redis.replicas - Redis pod count (when useLocal)
   replicas: 3
 
-  # redis.storageSize - Size (in Gi) of the persistent volume for Redis (only relevant when useLocal is true)
+  # redis.storageSize - Redis PVC size in Gi (useLocal)
   storageSize: 1
 
-  # redis.storageClass - Storage class to use for Redis persistent volumes (only relevant when useLocal is true)
-  # If not specified, the application will use the default storage class of the cluster
-  storageClass: 
+  # redis.storageClass - StorageClass for Redis PVCs (defaults to cluster default)
+  storageClass: null
 
-  # redis.allowControlPlane - Whether to allow scheduling Redis pods on control plane nodes (only relevant when useLocal is true)
+  # redis.allowControlPlane - Allow Redis pods on control-plane nodes (useLocal)
   allowControlPlane: false
 
   connection:
-    # redis.connection.host - Redis hostname or service DNS (only relevant when useLocal is false)
-    host: 
+    # redis.connection.host - External Redis host when not local
+    host: null
 
-    # redis.connection.port - Redis port number
+    # redis.connection.port - Redis port
     port: 6379
 
-    # redis.connection.password - Password used to connect to Redis
-    password: 
+    # redis.connection.password - Redis auth password
+    password:
 
+      null
 mailhog:
-  # mailhog.enabled - Whether to deploy MailHog
+  # mailhog.enabled - Deploy MailHog
   enabled: true
 
-  # mailhog.version - MailHog Docker image version
-  version: "v1.0.1"
+  # mailhog.version - MailHog image tag
+  version: v1.0.1
 
-  # mailhog.replicas - Number of MailHog replicas to deploy
+  # mailhog.replicas - MailHog pod count
   replicas: 1
 
-  # mailhog.path - The path at which MailHog is exposed behind the ingress
-  path: "/mailhog"
+  # mailhog.path - Ingress path for the MailHog UI
+  path: /mailhog
 
-  # mailhog.port - The port on which the MailHog web UI is exposed
+  # mailhog.port - MailHog web UI port
   port: 8025
 
-  # mailhog.smtpPort - The port on which MailHog listens for SMTP traffic
+  # mailhog.smtpPort - SMTP listen port
   smtpPort: 1025
 
-  # mailhog.allowControlPlane - Whether to allow scheduling MailHog pods on control plane nodes
+  # mailhog.allowControlPlane - Allow MailHog on control-plane nodes
   allowControlPlane: false
+Transform: AWS::Serverless-2016-10-31

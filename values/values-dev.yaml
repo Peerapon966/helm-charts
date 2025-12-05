@@ -1,0 +1,53 @@
+hostname: "hsr.local"
+namespace: "hsr"
+ingressClassName: "nginx"
+publiclyAccessible: true
+next:
+  version: "1.0.2"
+  replicas: 2
+  path: "/"
+  port: 3000
+  forcePullImage: false
+  allowControlPlane: false
+
+mysql:
+  useLocal: true
+  version: "8.0"
+  replicas: 2
+  storageSize: 10
+  storageClass: "local-path"
+  allowControlPlane: false
+  dataVersion: "20241224"
+  connection:
+    port: 3306
+    database: "starrail"
+    timezone: "Asia/Bangkok"
+
+phpmyadmin:
+  # phpmyadmin.enabled - Whether to deploy phpMyAdmin
+  enabled: true
+  version: "5.1.1"
+  replicas: 1
+  path: "/phpmyadmin"
+  port: 8080
+  arbitrary: true
+  allowControlPlane: false
+
+redis:
+  useLocal: true
+  version: "8-alpine"
+  replicas: 2
+  storageSize: 1
+  storageClass: "local-path"
+  allowControlPlane: false
+  connection:
+    port: 6379
+
+mailhog:
+  enabled: true
+  version: "v1.0.1"
+  replicas: 1
+  path: "/mailhog"
+  port: 8025
+  smtpPort: 1025
+  allowControlPlane: false
