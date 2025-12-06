@@ -43,8 +43,8 @@ spec:
                 name: {{ include "hsr.name" . }}-next
           resources:
             requests:
-              memory: "64Mi"
-              cpu: "250m"
+              cpu: "150m"
+              memory: "256Mi"
             limits:
-              memory: "128Mi"
               cpu: "500m"
+              memory: "512Mi"

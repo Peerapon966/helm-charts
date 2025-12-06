@@ -3,10 +3,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "hsr.name" . }}-myphpadmin
+  name: {{ include "hsr.name" . }}-phpmyadmin
 spec:
   selector:
-    app: {{ include "hsr.name" . }}-myphpadmin
+    app: {{ include "hsr.name" . }}-phpmyadmin
   ports:
     - protocol: TCP
       port: {{ int (default 8080 .Values.phpmyadmin.port) }}

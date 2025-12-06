@@ -76,10 +76,10 @@ spec:
             periodSeconds: 10
           resources:
             requests:
-              cpu: "500m"
+              cpu: "50m"
               memory: "1Gi"
             limits:
-              cpu: "1000m"
+              cpu: "200m"
               memory: "2Gi"
       terminationGracePeriodSeconds: 10
   volumeClaimTemplates:

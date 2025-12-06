@@ -39,9 +39,9 @@ spec:
                 name: {{ include "hsr.name" . }}-phpmyadmin
           resources:
             requests:
+              cpu: "50m"
               memory: "64Mi"
-              cpu: "250m"
             limits:
-              memory: "128Mi"
-              cpu: "500m"
+              cpu: "200m"
+              memory: "256Mi"
 {{- end }}
