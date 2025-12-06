@@ -161,4 +161,3 @@ mailhog:
 
   # mailhog.allowControlPlane - Allow MailHog on control-plane nodes
   allowControlPlane: false
-Transform: AWS::Serverless-2016-10-31

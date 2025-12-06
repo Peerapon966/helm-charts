@@ -24,7 +24,6 @@ mysql:
     timezone: "Asia/Bangkok"
 
 phpmyadmin:
-  # phpmyadmin.enabled - Whether to deploy phpMyAdmin
   enabled: true
   version: "5.1.1"
   replicas: 1
