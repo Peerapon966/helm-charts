@@ -2,6 +2,9 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "hsr.name" . }}-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/configuration-snippet: |-
+      rewrite ^(/mailhog|/phpmyadmin)(.*) $$2 last;
 spec:
   ingressClassName: {{ .Values.ingressClassName }}
   rules:
@@ -23,4 +26,13 @@ spec:
                 name: {{ include "hsr.name" . }}-phpmyadmin
                 port:
                   number: {{ int (default 8080 .Values.phpmyadmin.port) }}
+          {{- end }}
+          {{- if .Values.mailhog.enabled }}
+          - path: {{ default "/mailhog" (.Values.mailhog.path | quote) }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "hsr.name" . }}-mailhog
+                port:
+                  number: {{ int (default 8025 .Values.mailhog.port) }}
           {{- end }}
