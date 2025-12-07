@@ -11,7 +11,7 @@ spec:
     - host: {{ .Values.hostname | quote }}
       http:
         paths:
-          - path: {{ default / (.Values.next.path) }}
+          - path: {{ default "/" .Values.next.path | quote }}
             pathType: Prefix
             backend:
               service:
