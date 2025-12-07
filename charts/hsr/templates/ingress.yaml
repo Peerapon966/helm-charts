@@ -4,7 +4,7 @@ metadata:
   name: {{ include "hsr.name" . }}-ingress
   annotations:
     nginx.ingress.kubernetes.io/configuration-snippet: |-
-      rewrite ^(/mailhog|/phpmyadmin)(.*) $$2 last;
+      rewrite ^(/mailhog|/phpmyadmin)(.*) /$2 last;
 spec:
   ingressClassName: {{ .Values.ingressClassName }}
   rules:
