@@ -3,22 +3,22 @@ kind: Ingress
 metadata:
   name: {{ include "hsr.name" . }}-ingress
   annotations:
-    nginx.org/rewrites: {{ printf "serviceName=%s-mailhog rewrite=/;serviceName=%s-phpmyadmin rewrite=/" (include "hsr.name" .) (include "hsr.name" .) | quote }}
+    nginx.org/rewrites: {{ printf "serviceName=%s-phpmyadmin rewrite=/" (include "hsr.name" .) | quote }}
 spec:
   ingressClassName: {{ .Values.ingressClassName }}
   rules:
     - host: {{ .Values.hostname | quote }}
       http:
         paths:
-          # - path: {{ default "/" .Values.next.path | quote }}
-          #   pathType: Prefix
-          #   backend:
-          #     service:
-          #       name: {{ include "hsr.name" . }}-next
-          #       port:
-          #         number: {{ int (default 3000 .Values.next.port) }}
+          - path: {{ default "/" .Values.next.path | quote }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "hsr.name" . }}-next
+                port:
+                  number: {{ int (default 3000 .Values.next.port) }}
           {{- if .Values.phpmyadmin.enabled }}
-          - path: {{ printf "%s" (default "/phpmyadmin" .Values.phpmyadmin.path) | quote }}
+          - path: {{ default "/phpmyadmin" .Values.phpmyadmin.path | quote }}
             pathType: Prefix
             backend:
               service:
@@ -27,7 +27,7 @@ spec:
                   number: {{ int (default 8080 .Values.phpmyadmin.port) }}
           {{- end }}
           {{- if .Values.mailhog.enabled }}
-          - path: {{ printf "%s" (default "/mailhog" .Values.mailhog.path) | quote }}
+          - path: {{ default "/mailhog" .Values.mailhog.path | quote }}
             pathType: Prefix
             backend:
               service:
