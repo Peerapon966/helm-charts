@@ -2,8 +2,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "hsr.name" . }}-ingress
-  # annotations:
-  #   nginx.org/rewrite-target: /$2
+  annotations:
+    nginx.org/rewrites: {{ printf "serviceName=%s-mailhog rewrite=/;serviceName=%s-phpmyadmin rewrite=/" (include "hsr.name" .) (include "hsr.name" .) | quote }}
 spec:
   ingressClassName: {{ .Values.ingressClassName }}
   rules:
