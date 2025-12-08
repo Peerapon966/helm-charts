@@ -36,8 +36,8 @@ spec:
             - containerPort: 80
           env:
             - name: PMA_ABSOLUTE_URI
-              value: |
-                {{- $rawPath := default "/phpmyadmin" .Values.phpmyadmin.path -}}
+              value: 
+                {{ $rawPath := default "/phpmyadmin" .Values.phpmyadmin.path -}}
                 {{- $normPath := ternary $rawPath (printf "/%s" $rawPath) (hasPrefix "/" $rawPath) -}}
                 {{- printf "http://%s%s" .Values.hostname $normPath | quote }}
           envFrom:
