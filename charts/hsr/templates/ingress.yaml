@@ -2,8 +2,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "hsr.name" . }}-ingress
-  annotations:
-    nginx.org/rewrites: {{ printf "serviceName=%s-phpmyadmin rewrite=/" (include "hsr.name" .) | quote }}
+  # annotations:
+  #   nginx.org/rewrites: {{ printf "serviceName=%s-phpmyadmin rewrite=/" (include "hsr.name" .) | quote }}
 spec:
   ingressClassName: {{ .Values.ingressClassName }}
   rules:
