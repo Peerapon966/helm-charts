@@ -5,19 +5,22 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/enable-access-log: "true"
+    nginx.ingress.kubernetes.io/access-log-level: "info"
+    nginx.ingress.kubernetes.io/enable-rewrite-log: "true"
 spec:
   ingressClassName: {{ .Values.ingressClassName }}
   rules:
     - host: {{ .Values.hostname | quote }}
       http:
         paths:
-          - path: {{ default "/" .Values.next.path | quote }}
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ include "hsr.name" . }}-next
-                port:
-                  number: {{ int (default 3000 .Values.next.port) }}
+          # - path: {{ default "/" .Values.next.path | quote }}
+          #   pathType: Prefix
+          #   backend:
+          #     service:
+          #       name: {{ include "hsr.name" . }}-next
+          #       port:
+          #         number: {{ int (default 3000 .Values.next.port) }}
           {{- if .Values.phpmyadmin.enabled }}
           - path: {{ printf "%s(/|$)(.*)" (default "/phpmyadmin" .Values.phpmyadmin.path) | quote }}
             pathType: ImplementationSpecific
