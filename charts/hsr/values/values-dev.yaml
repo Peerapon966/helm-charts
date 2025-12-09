@@ -1,7 +1,7 @@
 hostname: "hsr.local"
 namespace: "hsr"
 ingressClassName: "nginx"
-publiclyAccessible: true
+publiclyAccessible: false
 next:
   version: "1.0.2"
   replicas: 2
