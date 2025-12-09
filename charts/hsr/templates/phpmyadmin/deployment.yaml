@@ -39,7 +39,7 @@ spec:
               value: 
                 {{ $rawPath := default "/phpmyadmin" .Values.phpmyadmin.path -}}
                 {{- $normPath := ternary $rawPath (printf "/%s" $rawPath) (hasPrefix "/" $rawPath) -}}
-                {{- printf "http://%s%s" .Values.hostname $normPath | quote }}
+                {{- printf "http://%s%s/" .Values.hostname $normPath | quote }}
           envFrom:
             - secretRef:
                 name: {{ include "hsr.name" . }}-phpmyadmin
