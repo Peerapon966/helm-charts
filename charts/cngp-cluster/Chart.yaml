@@ -1,0 +1,13 @@
+apiVersion: v2
+name: cngp-cluster
+description: A Helm chart for provisioning a PostgreSQL cluster (backed by CNPG)
+type: application
+version: 0.0.1
+appVersion: "v0.0.1"
+dependencies:
+  - name: cloudnative-pg
+    version: 0.29.0
+    repository: https://cloudnative-pg.github.io/charts
+  - name: vault-secrets-operator
+    version: 1.5.1
+    repository: https://helm.releases.hashicorp.com
