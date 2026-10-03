@@ -1,3 +1,13 @@
+{{- if .Values.initdb.initSql }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-initsql
+  namespace: {{ .Release.Namespace }}
+data:
+  init.sql: {{ .Values.initdb.initSql }}
+---
+{{- end }}
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
@@ -19,16 +29,38 @@ spec:
       - name: {{ . }}
     {{- end }}
   {{- end }}
+  superuserSecret:
+    name: {{ .Release.Name }}-postgres-role
+  {{- if .Values.roles }}
+  managed:
+    roles:
+    {{- range $key, $value := .Values.roles }}
+      - name: {{ $value.username }}
+        ensure: present
+        login: {{ $value.login }}
+        superuser: {{ $value.superuser }}
+        passwordSecret:
+          name: {{ $.Release.Name }}-{{ $key }}-role
+        {{- if $value.inRoles }}
+        inRoles:
+        {{- range $value.inRoles }}
+          - {{ . }}
+        {{- end }}
+        {{- end }}
+    {{- end }}
+  {{- end }}
   bootstrap:
     initdb:
-      database: {{ .Values.database.name }}
-      owner: {{ .Values.database.username }}
+      database: {{ .Values.initdb.database }}
+      owner: {{ .Values.initdb.owner.username }}
       secret:
-        name: {{ .Values.postgres.name }}-user
+        name: {{ .Release.Name }}-db-owner-role
+      {{- if .Values.initdb.initSql }}
       postInitApplicationSQLRefs:
         configMapRefs:
-          - name: {{ .Values.postgres.name }}-initdb
-            key: schema.sql
+          - name: {{ .Release.Name }}-initsql
+            key: init.sql
+      {{- end }}
   storage:
     storageClass: {{ .Values.storage.className }}
     size: {{ .Values.storage.size }}
