@@ -1,58 +1,33 @@
-# PostgreSQL major version to deploy.
-version: 18
-
-# Number of PostgreSQL pod replicas to run in the cluster.
+# Number of RabbitMQ pod replicas to run in the cluster.
 replicas: 3
 
-# Additional PostgreSQL extension enabled on the instance.
-extensions:
-  - pgvector
+# Enable TLS for RabbitMQ listener and client connections.
+tlsEnabled: false
 
-postgres:
-  # Vault secret path used to retrieve privileged postgres role credentials.
-  vaultSecretPath:
+# Paths in Vault used by the RabbitMQ chart for credentials and PKI configuration.
+vaultSecretPath:
+  # Path to the default RabbitMQ user credentials stored in Vault.
+  defaultUser:
+  # Path to the PKI issuer used for RabbitMQ certificate issuance.
+  pkiIssuer:
 
-initdb:
-  # Name of the database created during initialization.
-  database:
-  owner:
-    # Default database owner username created during bootstrap.
-    username: admin
-    # Vault secret path storing the database owner's credentials.
-    vaultSecretPath:
-  # Optional SQL statements executed after the database is initialized, also accept literal block.
-  initSql:
+# RabbitMQ resource definitions to create in the cluster.
+resources:
+  # Virtual hosts exposed by the RabbitMQ broker.
+  vhost:
+    - name:
+  # RabbitMQ queues to provision inside the configured virtual hosts.
+  queue:
+    - name:
+      vhost:
+      type:
 
-# Additional roles to create. You can define multiple entries.
-roles:
-  # app:
-  #   # Role username.
-  #   username: app
-  #   # Vault secret path for this role's credentials.
-  #   vaultSecretPath:
-  #   # Whether the role is allowed to log in to PostgreSQL.
-  #   login: true
-  #   # Whether the role should have superuser privileges.
-  #   superuser: false
-  #   # Additional PostgreSQL role membership granted to the user.
-  #   inRoles:
-  #     - pg_monitor
-  #     - pg_signal_backend
-
-# Storage settings for the PostgreSQL data volume.
+# Storage settings for the RabbitMQ data volume.
 storage:
-  # Kubernetes storage class to use for the PostgreSQL persistent volume.
+  # Kubernetes storage class to use for the RabbitMQ persistent volume.
   className: local-path
-  # Requested size for the PostgreSQL data volume.
+  # Requested size for the RabbitMQ data volume.
   size: 5Gi
-
-walStorage:
-  # Whether to provision a dedicated WAL volume.
-  enabled: true
-  # Storage class used for the WAL volume.
-  className: local-path
-  # Requested size for the WAL volume.
-  size: 1Gi
 
 # Vault configuration used by the RabbitMQ integration.
 vault:
@@ -71,11 +46,6 @@ vault:
   connectionRef:
   # Kubernetes auth configuration for Vault login.
   auth:
-    serviceAccount:
-      # Whether to create a dedicated Vault auth service account.
-      create: true
-      # Name of the Vault service account to use. Leave empty to use the chart default.
-      name:
     # Kubernetes auth role name used for Vault login.
     role:
   # Vault Kubernetes auth mount path.

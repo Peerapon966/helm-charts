@@ -1,0 +1,18 @@
+apiVersion: v2
+name: rabbitmq-cluster
+description: A Helm chart for provisioning a RabbitMQ cluster (backed by RabbitMQ Cluster Kubernetes Operator)
+type: application
+version: 1.0.0
+appVersion: "v0.0.1"
+# dependencies:
+#   - name: rabbitmq
+#   - name: messaging-topology-operator
+#   - name: cert-manager
+#     version: 1.21.1
+#     repository: oci://quay.io/jetstack/charts/cert-manager
+#   - name: vault
+#     version: 0.34.1
+#     repository: https://helm.releases.hashicorp.com
+#   - name: vault-secrets-operator
+#     version: 1.5.1
+#     repository: https://helm.releases.hashicorp.com
