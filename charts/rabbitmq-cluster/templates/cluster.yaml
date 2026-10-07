@@ -1,0 +1,54 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "rabbitmq-cluster.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicas }}
+  persistence:
+    storageClassName: {{ .Values.storage.className }}
+    storage: {{ .Values.storage.size }}
+  secretBackend:
+    vault:
+      role: {{ .Values.vault.auth.role }}
+      annotations:
+        vault.hashicorp.com/service: {{ .Values.vault.connection.server }}
+        vault.hashicorp.com/tls-secret: {{ ternary .Values.vault.connection.caBundleSecretRef (printf "%s-vault-ca" .Release.Name) .Values.vault.connection.caBundleSecretRef }}
+        vault.hashicorp.com/ca-cert: "/vault/tls/ca.crt"
+        vault.hashicorp.com/template-static-secret-render-interval: "5m"
+      defaultUserPath: {{ .Values.vault.kvEngine.mountPath }}{{ ternary "/data/" "/" (eq .Values.vault.kvEngine.version "v2") }}{{ .Values.rabbitmq.vaultSecretPath.defaultUser }}
+    # TODO: add mTLS by cert-manager
+{{- range .Values.resources.vhost }}
+---
+apiVersion: rabbitmq.com/v1beta1
+kind: Vhost
+metadata:
+  name: {{ $.Release.Name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "rabbitmq-cluster.labels" $ | nindent 4 }}
+spec:
+  name: {{ .name }}
+  rabbitmqClusterReference:
+    name: {{ $.Release.Name }}
+{{- end }}
+{{- range .Values.resources.queue }}
+---
+apiVersion: rabbitmq.com/v1beta1
+kind: Queue
+metadata:
+  name: {{ $.Release.Name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "rabbitmq-cluster.labels" $ | nindent 4 }}
+spec:
+  name: {{ .name }}
+  vhost: {{ .vhost }}
+  type: {{ .type }}
+  autoDelete: false
+  durable: true
+  rabbitmqClusterReference:
+    name: {{ $.Release.Name }}
+{{- end }}
