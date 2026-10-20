@@ -15,10 +15,10 @@ spec:
       role: {{ .Values.vault.auth.role }}
       annotations:
         vault.hashicorp.com/service: {{ .Values.vault.connection.server }}
-        vault.hashicorp.com/tls-secret: {{ ternary .Values.vault.connection.caBundleSecretRef (printf "%s-vault-ca" .Release.Name) .Values.vault.connection.caBundleSecretRef }}
+        vault.hashicorp.com/tls-secret: {{ ternary (printf "%s-vault-ca" .Release.Name) .Values.vault.connection.caBundleSecretRef (empty .Values.vault.connection.caBundleSecretRef) }}
         vault.hashicorp.com/ca-cert: "/vault/tls/ca.crt"
         vault.hashicorp.com/template-static-secret-render-interval: "5m"
-      defaultUserPath: {{ .Values.vault.kvEngine.mountPath }}{{ ternary "/data/" "/" (eq .Values.vault.kvEngine.version "v2") }}{{ .Values.rabbitmq.vaultSecretPath.defaultUser }}
+      defaultUserPath: {{ .Values.vault.kvEngine.mountPath }}{{ ternary "/data/" "/" (eq .Values.vault.kvEngine.version "v2") }}{{ .Values.vaultSecretPath.defaultUser }}
     # TODO: add mTLS by cert-manager
 {{- range .Values.resources.vhost }}
 ---
