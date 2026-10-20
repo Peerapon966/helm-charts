@@ -1,5 +1,16 @@
 apiVersion: v1
 entries:
+  cngp-cluster:
+  - apiVersion: v2
+    appVersion: v0.0.1
+    created: "2026-10-20T12:11:48.415451341Z"
+    description: A Helm chart for provisioning a PostgreSQL cluster (backed by CNPG)
+    digest: 51186c313f29ba652cb19e8836aac1d2286c2a199576d929b66fcb5a9aaf978d
+    name: cngp-cluster
+    type: application
+    urls:
+    - https://github.com/Peerapon966/helm-charts/releases/download/cngp-cluster-1.0.0/cngp-cluster-1.0.0.tgz
+    version: 1.0.0
   hsr:
   - apiVersion: v2
     appVersion: v0.0.1
@@ -501,4 +512,16 @@ entries:
     urls:
     - https://github.com/Peerapon966/hsr-helm-charts/releases/download/hsr-v0.1.0/hsr-v0.1.0.tgz
     version: v0.1.0
-generated: "2025-12-09T19:56:55.95692088Z"
+  rabbitmq-cluster:
+  - apiVersion: v2
+    appVersion: v0.0.1
+    created: "2026-10-20T12:11:48.606882739Z"
+    description: A Helm chart for provisioning a RabbitMQ cluster (backed by RabbitMQ
+      Cluster Kubernetes Operator)
+    digest: ff4a619e18e1922c942ea29df6346ecb32463851e52440f42f1e819447666921
+    name: rabbitmq-cluster
+    type: application
+    urls:
+    - https://github.com/Peerapon966/helm-charts/releases/download/rabbitmq-cluster-1.0.0/rabbitmq-cluster-1.0.0.tgz
+    version: 1.0.0
+generated: "2026-10-20T12:11:48.606997293Z"
