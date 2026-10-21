@@ -1,0 +1,27 @@
+{{- if and (empty .Values.caBundle) (empty .Values.caBundleSecretRef) }}
+{{- fail "Either caBundle or caBundleSecretRef must be provided" }}
+{{- end }}
+---
+{{- if not .Values.caBundleSecretRef }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Release.Name }}-vault-ca
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "vault-connection.labels" . | nindent 4 }}
+type: Opaque
+data:
+  ca.crt: {{ .Values.caBundle }}
+---
+{{- end }}
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultConnection
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "vault-connection.labels" . | nindent 4 }}
+spec:
+  address: {{ .Values.server }}
+  caCertSecretRef: {{ ternary (printf "%s-vault-ca" .Release.Name) .Values.caBundleSecretRef (empty .Values.caBundleSecretRef) }}

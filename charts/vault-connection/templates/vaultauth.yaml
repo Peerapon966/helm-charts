@@ -1,0 +1,27 @@
+{{- range .Values.auth }}
+{{- if .serviceAccount.create }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ $.Release.Name }}-{{ .serviceAccount.name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "vault-connection.labels" $ | nindent 4 }}
+---
+{{- end }}
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "vault-connection.labels" $ | nindent 4 }}
+spec:
+  vaultConnectionRef: {{ $.Release.Name }}
+  method: kubernetes
+  mount: {{ default "kubernetes" .kubernetesAuthMountPath }}
+  kubernetes:
+    role: {{ .role }}
+    serviceAccount: {{ .serviceAccount.name }}
+---
+{{- end }}
