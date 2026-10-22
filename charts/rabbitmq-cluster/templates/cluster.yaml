@@ -14,8 +14,8 @@ spec:
     vault:
       role: {{ .Values.vault.auth.role }}
       annotations:
-        vault.hashicorp.com/service: {{ .Values.vault.connection.server }}
-        vault.hashicorp.com/tls-secret: {{ ternary (printf "%s-vault-ca" .Release.Name) .Values.vault.connection.caBundleSecretRef (empty .Values.vault.connection.caBundleSecretRef) }}
+        vault.hashicorp.com/service: {{ .Values.vault.server }}
+        vault.hashicorp.com/tls-secret: {{ .Values.vault.caBundleSecretRef }}
         vault.hashicorp.com/ca-cert: "/vault/tls/ca.crt"
         vault.hashicorp.com/template-static-secret-render-interval: "5m"
       defaultUserPath: {{ .Values.vault.kvEngine.mountPath }}{{ ternary "/data/" "/" (eq .Values.vault.kvEngine.version "v2") }}{{ .Values.vaultSecretPath.defaultUser }}
@@ -25,7 +25,7 @@ spec:
 apiVersion: rabbitmq.com/v1beta1
 kind: Vhost
 metadata:
-  name: {{ $.Release.Name }}
+  name: {{ .name }}
   namespace: {{ $.Release.Namespace }}
   labels:
     {{- include "rabbitmq-cluster.labels" $ | nindent 4 }}
@@ -39,7 +39,7 @@ spec:
 apiVersion: rabbitmq.com/v1beta1
 kind: Queue
 metadata:
-  name: {{ $.Release.Name }}
+  name: {{ .name }}
   namespace: {{ $.Release.Namespace }}
   labels:
     {{- include "rabbitmq-cluster.labels" $ | nindent 4 }}
