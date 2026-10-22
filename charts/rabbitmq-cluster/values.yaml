@@ -31,6 +31,10 @@ storage:
 
 # Vault configuration used by the RabbitMQ integration.
 vault:
+  # Vault server URL.
+  server: https://192.168.1.10:8200
+  # Secret name containing the Vault CA certificate under the ca.crt key; must be in the same namespace as the release.
+  caBundleSecretRef:
   # Kubernetes auth configuration for Vault login.
   auth:
     # Whether to create the Vault auth.
