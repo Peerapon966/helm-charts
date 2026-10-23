@@ -501,16 +501,4 @@ entries:
     urls:
     - https://github.com/Peerapon966/hsr-helm-charts/releases/download/hsr-v0.1.0/hsr-v0.1.0.tgz
     version: v0.1.0
-  rabbitmq-cluster:
-  - apiVersion: v2
-    appVersion: v0.0.1
-    created: "2026-10-20T12:11:48.606882739Z"
-    description: A Helm chart for provisioning a RabbitMQ cluster (backed by RabbitMQ
-      Cluster Kubernetes Operator)
-    digest: ff4a619e18e1922c942ea29df6346ecb32463851e52440f42f1e819447666921
-    name: rabbitmq-cluster
-    type: application
-    urls:
-    - https://github.com/Peerapon966/helm-charts/releases/download/rabbitmq-cluster-1.0.0/rabbitmq-cluster-1.0.0.tgz
-    version: 1.0.0
 generated: "2026-10-20T12:11:48.606997293Z"
