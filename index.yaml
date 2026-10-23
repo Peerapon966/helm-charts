@@ -1,5 +1,16 @@
 apiVersion: v1
 entries:
+  cnpg-cluster:
+  - apiVersion: v2
+    appVersion: v0.0.1
+    created: "2026-10-23T19:03:12.479854079Z"
+    description: A Helm chart for provisioning a PostgreSQL cluster (backed by CNPG)
+    digest: 1617ce98157041e898ac44e79f386bd559a02838d709d58044efd8ee1b03542e
+    name: cnpg-cluster
+    type: application
+    urls:
+    - https://github.com/Peerapon966/helm-charts/releases/download/cnpg-cluster-1.0.0/cnpg-cluster-1.0.0.tgz
+    version: 1.0.0
   hsr:
   - apiVersion: v2
     appVersion: v0.0.1
@@ -501,4 +512,28 @@ entries:
     urls:
     - https://github.com/Peerapon966/hsr-helm-charts/releases/download/hsr-v0.1.0/hsr-v0.1.0.tgz
     version: v0.1.0
-generated: "2026-10-20T12:11:48.606997293Z"
+  rabbitmq-cluster:
+  - apiVersion: v2
+    appVersion: v0.0.1
+    created: "2026-10-23T19:03:12.651777964Z"
+    description: A Helm chart for provisioning a RabbitMQ cluster (backed by RabbitMQ
+      Cluster Kubernetes Operator)
+    digest: 00a843ee9b74084442bf5fbe49ec043f32db4e774d5d298a23f3d1620a79f459
+    name: rabbitmq-cluster
+    type: application
+    urls:
+    - https://github.com/Peerapon966/helm-charts/releases/download/rabbitmq-cluster-1.0.0/rabbitmq-cluster-1.0.0.tgz
+    version: 1.0.0
+  vault-connection:
+  - apiVersion: v2
+    appVersion: v0.0.1
+    created: "2026-10-23T19:03:12.83132667Z"
+    description: A Helm chart for provisioning a VaultConnection object (backed by
+      Hashicorp Vault)
+    digest: a703aeed2cf2d1cd04820f0ee697c0f7189c83ef7e6eb03b9845c9c4a50f61de
+    name: vault-connection
+    type: application
+    urls:
+    - https://github.com/Peerapon966/helm-charts/releases/download/vault-connection-1.0.0/vault-connection-1.0.0.tgz
+    version: 1.0.0
+generated: "2026-10-23T19:03:12.831368984Z"
