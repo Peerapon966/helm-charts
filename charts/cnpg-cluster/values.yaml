@@ -17,7 +17,7 @@ initdb:
   database:
   owner:
     # Default database owner username created during bootstrap.
-    username: admin
+    username:
     # Vault secret path storing the database owner's credentials.
     vaultSecretPath:
   # Optional SQL statements executed after the database is initialized, also accept literal block.
