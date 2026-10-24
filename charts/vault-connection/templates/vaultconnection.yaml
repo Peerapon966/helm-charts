@@ -6,7 +6,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ .Release.Name }}-vault-ca
+  name: {{ default (include "vault-connection.fullname" .) .Values.connectionName }}-vault-ca
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "vault-connection.labels" . | nindent 4 }}
@@ -18,10 +18,10 @@ data:
 apiVersion: secrets.hashicorp.com/v1beta1
 kind: VaultConnection
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ default (include "vault-connection.fullname" .) .Values.connectionName }}
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "vault-connection.labels" . | nindent 4 }}
 spec:
   address: {{ .Values.server }}
-  caCertSecretRef: {{ ternary (printf "%s-vault-ca" .Release.Name) .Values.caBundleSecretRef (empty .Values.caBundleSecretRef) }}
+  caCertSecretRef: {{ ternary (printf "%s-vault-ca" (default (include "vault-connection.fullname" .) .Values.connectionName)) .Values.caBundleSecretRef (empty .Values.caBundleSecretRef) }}

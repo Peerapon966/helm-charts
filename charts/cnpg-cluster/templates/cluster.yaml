@@ -2,8 +2,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-initsql
+  name: {{ default (include "cnpg-cluster.fullname" .) .Values.clusterName }}-initsql
   namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "cnpg-cluster.labels" . | nindent 4 }}
 data:
   init.sql: {{ .Values.initdb.initSql }}
 ---
@@ -11,10 +13,10 @@ data:
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ default (include "cnpg-cluster.fullname" .) .Values.clusterName }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "cngp-cluster.labels" . | nindent 4 }}
+    {{- include "cnpg-cluster.labels" . | nindent 4 }}
 spec:
   imageCatalogRef:
     apiGroup: postgresql.cnpg.io
@@ -30,7 +32,7 @@ spec:
     {{- end }}
   {{- end }}
   superuserSecret:
-    name: {{ .Release.Name }}-postgres-role
+    name: {{ default (include "cnpg-cluster.fullname" .) .Values.clusterName }}-postgres-role
   {{- if .Values.roles }}
   managed:
     roles:
@@ -54,11 +56,11 @@ spec:
       database: {{ .Values.initdb.database }}
       owner: {{ .Values.initdb.owner.username }}
       secret:
-        name: {{ .Release.Name }}-db-owner-role
+        name: {{ default (include "cnpg-cluster.fullname" .) .Values.clusterName }}-db-owner-role
       {{- if .Values.initdb.initSql }}
       postInitApplicationSQLRefs:
         configMapRefs:
-          - name: {{ .Release.Name }}-initsql
+          - name: {{ default (include "cnpg-cluster.fullname" .) .Values.clusterName }}-initsql
             key: init.sql
       {{- end }}
   storage:

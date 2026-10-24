@@ -1,3 +1,6 @@
+# Name of Vault connection to create. Default to chart's fullname if not specified.
+connectionName:
+
 # Vault server URL.
 server: https://192.168.1.10:8200
 

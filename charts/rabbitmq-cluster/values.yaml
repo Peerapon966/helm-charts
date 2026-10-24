@@ -1,3 +1,6 @@
+# Name of RabbitMQ cluster to create. Default to chart's fullname if not specified.
+clusterName:
+
 # Number of RabbitMQ pod replicas to run in the cluster.
 replicas: 3
 
@@ -39,6 +42,8 @@ vault:
   auth:
     # Whether to create the Vault auth.
     create: true
+    # Name of Vault auth to create. Default to chart's fullname if not specified.
+    name:
     # Name of an existing Vault connection to use.
     connectionRef:
     # Kubernetes auth role name used for Vault login.
@@ -46,7 +51,7 @@ vault:
     # Vault Kubernetes auth mount path. Default to "kubernetes" if not specified.
     kubernetesAuthMountPath: kubernetes
   # Name of an existing Vault auth to use; ignored when auth.create is true.
-  vaultAuthRef: 
+  vaultAuthRef:
   # Vault KV engine configuration.
   kvEngine:
     # Mount path where secrets are stored inside the KV engine.

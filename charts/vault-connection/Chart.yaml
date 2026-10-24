@@ -2,7 +2,7 @@ apiVersion: v2
 name: vault-connection
 description: A Helm chart for provisioning a VaultConnection object (backed by Hashicorp Vault)
 type: application
-version: 1.0.0
+version: 1.1.0
 appVersion: "v0.0.1"
 # dependencies:
 #   - name: vault

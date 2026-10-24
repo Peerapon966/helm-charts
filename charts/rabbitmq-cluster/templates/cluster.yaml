@@ -1,7 +1,7 @@
 apiVersion: rabbitmq.com/v1beta1
 kind: RabbitmqCluster
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ default (include "rabbitmq-cluster.fullname" .) .Values.clusterName }}
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "rabbitmq-cluster.labels" . | nindent 4 }}
@@ -32,7 +32,7 @@ metadata:
 spec:
   name: {{ .name }}
   rabbitmqClusterReference:
-    name: {{ $.Release.Name }}
+    name: {{ default (include "rabbitmq-cluster.fullname" $) $.Values.clusterName }}
 {{- end }}
 {{- range .Values.resources.queue }}
 ---
@@ -50,5 +50,5 @@ spec:
   autoDelete: false
   durable: true
   rabbitmqClusterReference:
-    name: {{ $.Release.Name }}
+    name: {{ default (include "rabbitmq-cluster.fullname" $) $.Values.clusterName }}
 {{- end }}
